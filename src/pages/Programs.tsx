@@ -123,7 +123,8 @@ export default function ProgramsScreen() {
 
   return (
     <div className="w-full font-sans programs-page-root">
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
 
         :root {
@@ -210,13 +211,13 @@ export default function ProgramsScreen() {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 text-left w-full flex flex-col justify-center py-8 lg:py-12"
+              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-12 sm:py-16 lg:py-12"
             >
-              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.1] mb-4 sm:mb-6 italic">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.15] mb-5 sm:mb-6 italic">
                 Choose the Right Program to{" "}
                 <span className="text-accent-gold">Start Your Career Journey</span>
               </h1>
-              <p className="text-base sm:text-lg text-text-muted mb-7 sm:mb-10 max-w-xl font-sans">
+              <p className="text-lg sm:text-xl text-text-muted mb-8 sm:mb-10 max-w-2xl font-sans leading-relaxed">
                 Explore skill-based, career-focused programs designed to take you from learning to earning with confidence.
               </p>
               <div className="flex flex-wrap gap-3 sm:gap-4 font-sans">
@@ -234,7 +235,7 @@ export default function ProgramsScreen() {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex-1 relative w-full flex justify-center lg:justify-end items-center"
+              className="flex-1 relative w-full hidden md:flex justify-center lg:justify-end items-center"
             >
               {/* programs-hero-img: 100% wide on mobile, 160% bleed only on lg+ (see <style> above) */}
               <img
@@ -256,9 +257,8 @@ export default function ProgramsScreen() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
-                selectedCategory === cat ? "bg-primary text-white" : "bg-transparent text-text-muted hover:bg-accent-gold/10"
-              }`}
+              className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${selectedCategory === cat ? "bg-primary text-white" : "bg-transparent text-text-muted hover:bg-accent-gold/10"
+                }`}
             >
               {cat}
             </button>
@@ -368,21 +368,21 @@ export default function ProgramsScreen() {
       {/* Video Modal */}
       {previewVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          <div 
+          <div
             className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm"
             onClick={() => setPreviewVideo(null)}
           />
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
-            <button 
+            <button
               onClick={() => setPreviewVideo(null)}
               className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-colors"
             >
               ✕
             </button>
-            <video 
-              src={previewVideo} 
-              controls 
-              autoPlay 
+            <video
+              src={previewVideo}
+              controls
+              autoPlay
               className="w-full h-full object-contain"
             >
               Your browser does not support the video tag.
@@ -394,16 +394,16 @@ export default function ProgramsScreen() {
   );
 }
 
-function ProgramSection({ 
-  title, 
-  programs, 
+function ProgramSection({
+  title,
+  programs,
   onPreview,
   isAdmin,
   enrolledProgramIds,
   onEnroll
-}: { 
-  title: string, 
-  programs: any[], 
+}: {
+  title: string,
+  programs: any[],
   onPreview: (url: string) => void,
   isAdmin: boolean,
   enrolledProgramIds: string[],
@@ -412,28 +412,28 @@ function ProgramSection({
   return (
     <section className="mb-20">
       <div className="text-center mb-2">
-        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold inline-block italic" style={{ color: '#02367B' }}>{title}</h2>
-        <div className="mx-auto mt-3 h-1 w-16 rounded-full" style={{ backgroundColor: '#D4AF37' }}></div>
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold inline-block italic text-primary">{title}</h2>
+        <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-accent-gold"></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
-  {programs.map((program, i) => {
-    const isEnrolled = enrolledProgramIds.includes(program?.id);
+        {programs.map((program, i) => {
+          const isEnrolled = enrolledProgramIds.includes(program?.id);
 
-    return (
-          <motion.div
-            key={program.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-transparent border-2 rounded-3xl overflow-hidden flex flex-col transition-all hover:-translate-y-2 hover:shadow-xl"
-            style={{ borderColor: '#006CA5' }}
-          >
-            {/* program-card-img: h-60 on tablet+, shorter on mobile (see <style> above) */}
-            <div className="h-60 overflow-hidden program-card-img">
-              <img src={program.image} alt={program.title} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" />
-            </div>
-            
+          return (
+            <motion.div
+              key={program.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-transparent border-2 rounded-3xl overflow-hidden flex flex-col transition-all hover:-translate-y-2 hover:shadow-xl"
+              style={{ borderColor: '#006CA5' }}
+            >
+              {/* program-card-img: h-60 on tablet+, shorter on mobile (see <style> above) */}
+              <div className="h-60 overflow-hidden program-card-img">
+                <img src={program.image} alt={program.title} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" />
+              </div>
+
               <div className="p-8 flex-grow flex flex-col">
                 <h3 className="text-2xl font-bold text-primary mb-4 leading-tight group">
                   <span className="title-accent">{program?.title || 'Untitled Program'}</span>
@@ -442,34 +442,60 @@ function ProgramSection({
                   {program?.description || 'No description available.'}
                 </p>
                 <div className="mt-auto flex flex-col sm:flex-row gap-3">
-                  {isEnrolled ? (
-                    <button 
-                      onClick={() => onPreview(program?.videoUrl)}
-                      className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-green-600 border-2 border-green-600 text-white font-bold rounded-lg hover:bg-green-700 hover:border-green-700 transition-all group"
-                    >
-                      View Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => onEnroll(program?.id)}
-                      className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent border-2 border-accent-gold text-primary font-bold rounded-lg hover:bg-accent-gold hover:text-white transition-all group"
-                    >
-                      Enroll <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  )}
-                  
-                  {isAdmin && (
-                    <button 
-                      onClick={() => onPreview(program?.videoUrl)}
-                      className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-bold rounded-lg hover:brightness-110 transition-all"
-                    >
-                      Preview
-                    </button>
-                  )}
+                  {(() => {
+                    const idMap: Record<string, string> = {
+                      "Human Resource Management": "8",
+                      "Digital Marketing Expert": "7",
+                      "Banking & Finance Masterclass": "6",
+                      "AutoCAD Design": "5",
+                      "Data Science & AI": "4",
+                      "Full Stack Java Developer": "3",
+                      "Arambha Campus to Corporate Program": "2",
+                      "Campus to Corporate Program": "2",
+                      "Spoken English Mastery": "1",
+                      "Foundation 60": "9"
+                    };
+                    const id = idMap[program?.title] || "1";
+
+                    return (
+                      <>
+                        <Link
+                          to={`/programs/${id}`}
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all text-center text-sm"
+                        >
+                          View Details
+                        </Link>
+                        {isEnrolled ? (
+                          <button
+                            onClick={() => onPreview(program?.videoUrl)}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-green-600 border-2 border-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all text-sm group"
+                          >
+                            View Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => onEnroll(program?.id)}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 brand-gradient-navy text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-md text-sm"
+                          >
+                            Enroll
+                          </button>
+                        )}
+                        {isAdmin && (
+                          <button
+                            onClick={() => onPreview(program?.videoUrl)}
+                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 transition-all text-sm"
+                            title="Preview Video"
+                          >
+                            Preview
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </motion.div>
-               );
+          );
         })}
       </div>
     </section>

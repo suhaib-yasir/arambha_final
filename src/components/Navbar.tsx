@@ -61,17 +61,17 @@ export default function Navbar() {
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-4 w-full">
-        <Link to="/" className="flex items-center gap-2 sm:gap-3">
+        <Link to="/" className="flex items-center gap-3 sm:gap-4 lg:gap-6">
           <img
             alt="Arambha Logo"
-            className="h-10 sm:h-14 w-auto object-contain scale-150"
+            className="h-12 sm:h-16 lg:h-20 w-auto object-contain"
             src={logo}
           />
           <img
-  src={arambhaText}
-  alt="Arambha Skill Solutions"
-  className="h-12 sm:h-14 w-auto object-contain scale-300 ml-12"
-/>
+            src={arambhaText}
+            alt="Arambha Skill Solutions"
+            className="h-8 sm:h-10 lg:h-12 w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop Navigation */}

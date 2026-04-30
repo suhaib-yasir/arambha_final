@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import LegalSupport from "./pages/LegalSupport";
 import AdminPortal from "./pages/admin/AdminPortal";
+import ProgramDetails from "./pages/ProgramDetails";
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
 
@@ -58,6 +59,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/programs" element={<Programs />} />
+            <Route path="/programs/:id" element={<ProgramDetails />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/careers" element={<Careers />} />

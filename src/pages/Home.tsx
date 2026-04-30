@@ -36,17 +36,17 @@ import fullStackJavaImg from "../assets/programs/full-stack-java.png";
 
 function LogoBox({ alt, domain }: { alt: string, domain: string }) {
   const customLogos: Record<string, string> = {
-  "tcs.com": "https://i.logos-download.com/113971/29583-s2560-9598f09d0f40cf2bc3d3c47217493980.png/Tata_Consultancy_Services_Logo_2020-s2560.png?dl",
-  "infosys.com": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/500px-Infosys_logo.svg.png",
+    "tcs.com": "https://i.logos-download.com/113971/29583-s2560-9598f09d0f40cf2bc3d3c47217493980.png/Tata_Consultancy_Services_Logo_2020-s2560.png?dl",
+    "infosys.com": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/500px-Infosys_logo.svg.png",
 
 
-};
+  };
 
-const iconUrl =
-  customLogos[domain] ||
-  `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
+  const iconUrl =
+    customLogos[domain] ||
+    `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-  
+
   return (
     <div className="flex-shrink-0 px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm flex flex-col items-center justify-center min-w-[200px] h-32 hover:border-accent-gold hover:shadow-lg transition-all group gap-2">
 
@@ -70,7 +70,7 @@ const iconUrl =
 
 export default function Home() {
   const navigate = useNavigate();
-  
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -93,7 +93,8 @@ export default function Home() {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
 
         :root {
@@ -111,10 +112,11 @@ export default function Home() {
       `}} />
       {/* Hero Section */}
       <section
-        className="relative pt-16 sm:pt-24 pb-20 sm:pb-32 overflow-hidden bg-cover bg-center bg-no-repeat font-sans"
-        style={{ backgroundImage: `url(${heroBg})` }}
+        className="relative pt-16 sm:pt-20 lg:pt-28 pb-16 sm:pb-20 lg:pb-28 overflow-hidden font-sans"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center lg:text-left grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+        <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10 max-w-[90vw] xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 text-center lg:text-left grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -137,22 +139,22 @@ export default function Home() {
                 WhatsApp Now
               </button>
             </motion.div>
-            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-left ">
-              <div className="flex items-start gap-3 relative left-36 ">
+            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-left">
+              <div className="flex items-start gap-3">
                 <Globe className="text-accent-gold" size={24} />
-                <div className= " ">
+                <div>
                   <p className="font-bold text-primary font-serif italic">Daily Practice</p>
                   <p className="text-sm text-on-surface-variant font-sans">Native language tailored</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 relative left-34">
+              <div className="flex items-start gap-3">
                 <Briefcase className="text-accent-gold" size={24} />
                 <div>
                   <p className="font-bold text-primary font-serif italic">Live Projects</p>
                   <p className="text-sm text-on-surface-variant font-sans">Real career opportunities</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 relative left-28">
+              <div className="flex items-start gap-3">
                 <CheckCircle2 className="text-accent-gold" size={24} />
                 <div>
                   <p className="font-bold text-primary font-serif italic">Outcome-Driven</p>
@@ -225,7 +227,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-100px" }}
               className="lg:w-2/3"
             >
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 {[
                   { icon: School, label: "Skill Training" },
                   { icon: CreditCard, label: "Certification" },
@@ -297,7 +299,7 @@ export default function Home() {
       </section>
 
       {/* Featured Program */}
-      <section className="py-16 sm:py-32 bg-white overflow-hidden relative border-y border-slate-100 font-sans">
+      <section className="py-16 sm:py-20 lg:py-28 bg-white overflow-hidden relative border-y border-slate-100 font-sans">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-accent-gold/5 blur-3xl -mr-20"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 items-center">
@@ -371,7 +373,8 @@ export default function Home() {
               title="Spoken English Mastery"
               desc="A structured Spoken English program designed to build fluency, confidence, pronunciation, and real-world communication skills."
               img={spokenEnglishImg}
-              onClick={() => navigate("/programs?program=Spoken English Mastery")}
+              slug="1"
+              onEnroll={() => navigate("/login")}
             />
             <ProgramCard
               tag="Career"
@@ -380,7 +383,8 @@ export default function Home() {
               title="Campus to Corporate Program"
               desc="Intensive preparation program with mock interviews, resume building, and aptitude training for smooth career transitions."
               img={campusToCorporateImg}
-              onClick={() => navigate("/programs?program=Campus to Corporate Program")}
+              slug="2"
+              onEnroll={() => navigate("/login")}
             />
             <ProgramCard
               tag="Technical"
@@ -389,14 +393,15 @@ export default function Home() {
               title="Full Stack Java Developer"
               desc="Master Java, Spring Boot, React, and MySQL to become a complete Full Stack Developer."
               img={fullStackJavaImg}
-              onClick={() => navigate("/programs?program=Full Stack Java Developer")}
+              slug="3"
+              onEnroll={() => navigate("/login")}
             />
           </motion.div>
         </div>
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-2 sm:py-8 bg-white font-sans">
+      <section className="py-8 sm:py-12 lg:py-16 bg-white font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-16 overflow-hidden relative border border-slate-100 shadow-2xl">
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-surface rounded-full blur-[100px]"></div>
@@ -448,7 +453,7 @@ function LogoItem({ alt, src }: { alt: string, src: string }) {
   );
 }
 
-function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg-slate-100 text-primary border-slate-200", onClick }: { tag: string, category?: string, title: string, desc: string, duration?: string, img: string, tagColor?: string, onClick?: () => void }) {
+function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg-slate-100 text-primary border-slate-200", slug, onEnroll }: { tag: string, category?: string, title: string, desc: string, duration?: string, img: string, tagColor?: string, slug?: string, onEnroll?: () => void }) {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
@@ -458,20 +463,31 @@ function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg
     <motion.div
       variants={itemVariants}
       whileHover={{ y: -8 }}
-      onClick={onClick}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 flex flex-col"
     >
-      <div className="h-64 overflow-hidden relative">
+      <div className="h-64 overflow-hidden relative shrink-0">
         <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src={img} alt={title} />
       </div>
-      <div className="p-8">
+      <div className="p-8 flex-grow flex flex-col">
         <h3 className="text-xl text-primary mb-2 font-serif font-bold italic group-hover:text-accent-gold transition-colors">{title}</h3>
         <p className="text-on-surface-variant mb-6 font-sans text-sm leading-relaxed line-clamp-3">{desc}</p>
-        <div className="flex items-center justify-between pt-6 border-t border-slate-100 text-sm">
-          <span className="font-bold text-primary font-serif italic uppercase tracking-wider">{duration}</span>
-          <div className="bg-surface p-1 rounded-full group-hover:bg-accent-gold group-hover:text-white transition-colors">
-            <ChevronRight size={20} />
-          </div>
+        <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-slate-100 mt-auto text-sm">
+          {slug && (
+            <Link 
+              to={`/programs/${slug}`}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all text-center"
+            >
+              View Details
+            </Link>
+          )}
+          {onEnroll && (
+            <button 
+              onClick={onEnroll}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold brand-gradient-navy text-white hover:brightness-110 shadow-md transition-all"
+            >
+              Enroll
+            </button>
+          )}
         </div>
       </div>
     </motion.div>
@@ -598,14 +614,14 @@ function RoadmapSection() {
                     : { y: 0 }}
                   transition={isActive ? { duration: 2.4, repeat: Infinity, ease: "easeInOut" } : {}}
                   className={`relative w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-3xl flex items-center justify-center mb-5 sm:mb-7 transition-all duration-500 ${isActive
-                      ? "border-2 border-accent-gold shadow-[0_0_24px_4px_rgba(212,175,55,0.25)]"
-                      : "border-2 border-slate-100 shadow-md"
+                    ? "border-2 border-accent-gold shadow-[0_0_24px_4px_rgba(212,175,55,0.25)]"
+                    : "border-2 border-slate-100 shadow-md"
                     }`}
                 >
                   {/* Number badge */}
                   <div className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shadow-md border-2 transition-all duration-500 font-sans ${isActive
-                      ? "bg-accent-gold text-white border-accent-gold"
-                      : "bg-white text-on-surface-variant border-slate-100"
+                    ? "bg-accent-gold text-white border-accent-gold"
+                    : "bg-white text-on-surface-variant border-slate-100"
                     }`}>
                     {i + 1}
                   </div>
