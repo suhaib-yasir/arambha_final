@@ -61,17 +61,17 @@ export default function Navbar() {
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-4 w-full">
-        <Link to="/" className="flex items-center gap-2 sm:gap-3">
+        <Link to="/" className="flex items-center relative w-[280px] sm:w-[350px] lg:w-[450px] xl:w-[500px] h-10 sm:h-12 lg:h-14 z-10 shrink-0">
           <img
             alt="Arambha Logo"
-            className="h-10 sm:h-14 w-auto object-contain scale-150"
+            className="absolute left-0 h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.3] lg:scale-[1.6] origin-left transition-transform"
             src={logo}
           />
           <img
-  src={arambhaText}
-  alt="Arambha Skill Solutions"
-  className="h-12 sm:h-14 w-auto object-contain scale-300 ml-12"
-/>
+            src={arambhaText}
+            alt="Arambha Skill Solutions"
+            className="absolute left-[55px] sm:left-[65px] lg:left-[95px] h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.4] sm:scale-[1.8] lg:scale-[2.2] xl:scale-[2.5] origin-left transition-transform"
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -79,11 +79,10 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <Link
               key={link.path}
-              className={`text-sm font-semibold tracking-tight transition-colors pb-1 ${
-                isActive(link.path)
+              className={`text-sm font-semibold tracking-tight transition-colors pb-1 ${isActive(link.path)
                   ? 'text-primary border-b-2 border-accent-gold'
                   : 'text-on-surface-variant hover:text-primary'
-              }`}
+                }`}
               to={link.path}
             >
               {link.label}
@@ -92,11 +91,10 @@ export default function Navbar() {
           {isAdmin && (
             <Link
               to="/admin/portal"
-              className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${
-                location.pathname.startsWith('/admin')
+              className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${location.pathname.startsWith('/admin')
                   ? 'text-accent-gold border-b-2 border-accent-gold'
                   : 'text-accent-gold/80 hover:text-accent-gold'
-              }`}
+                }`}
             >
               <ShieldCheck size={16} />
               Portal
@@ -109,7 +107,7 @@ export default function Navbar() {
           {!currentUser ? (
             <Link to="/login" className="hidden lg:block text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</Link>
           ) : (
-            <button 
+            <button
               onClick={() => signOut(auth).then(() => navigate('/'))}
               className="hidden lg:flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all cursor-pointer"
             >
@@ -139,11 +137,10 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <Link
                 key={link.path}
-                className={`block px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive(link.path)
+                className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
                     ? 'bg-accent-gold text-white'
                     : 'text-on-surface-variant hover:bg-slate-50'
-                }`}
+                  }`}
                 to={link.path}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -154,11 +151,10 @@ export default function Navbar() {
               <div className="space-y-3">
                 <Link
                   to="/admin/portal"
-                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${
-                    location.pathname.startsWith('/admin')
+                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/admin')
                       ? 'bg-accent-gold text-white'
                       : 'text-accent-gold hover:bg-accent-gold/5'
-                  }`}
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <ShieldCheck size={20} />

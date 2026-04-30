@@ -179,106 +179,12 @@ const MORE_JOBS: Job[] = [
   }
 ];
 
-// --- Custom Dropdown Component ---
-const CustomDropdown = ({ 
-  label, 
-  options, 
-  value, 
-  onChange, 
-  icon: Icon 
-}: { 
-  label: string, 
-  options: string[], 
-  value: string, 
-  onChange: (val: string) => void,
-  icon: any
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  return (
-    <div className="flex-1 lg:w-[180px] relative font-sans" ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-full flex items-center justify-between px-4 py-4 group transition-all duration-300 hover:bg-gray-50/50"
-      >
-        <div className="flex items-center">
-          <Icon className="w-4 h-4 mr-2.5 transition-transform group-hover:scale-110" style={{ color: COLORS.gold }} />
-          <span className="text-xs font-bold text-gray-700 truncate max-w-[100px]">
-            {value === label ? label : value}
-          </span>
-        </div>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-          className="ml-2"
-        >
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400 rotate-90" />
-        </motion.div>
-      </button>
-
-      {/* Animated Dropdown Menu */}
-      <motion.div
-        initial={false}
-        animate={isOpen ? { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          visibility: 'visible'
-        } : { 
-          opacity: 0, 
-          y: 10, 
-          scale: 0.95,
-          transitionEnd: { visibility: 'hidden' }
-        }}
-        transition={{ 
-          duration: 0.3, 
-          ease: [0.23, 1, 0.32, 1] 
-        }}
-        className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-50 py-1.5 backdrop-blur-sm bg-white/95"
-      >
-        <div className="max-h-[250px] overflow-y-auto custom-scrollbar">
-          {options.map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                onChange(option);
-                setIsOpen(false);
-              }}
-              className={`w-full text-left px-4 py-2.5 text-[11px] font-bold transition-all duration-200 flex items-center gap-2
-                ${value === option 
-                  ? 'bg-gray-50 text-[#1F2F4F]' 
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-[#1F2F4F]'}`}
-            >
-              {value === option && (
-                <motion.div 
-                  layoutId={`${label}-active`}
-                  className="w-1 h-3 rounded-full bg-[#D4AF37]" 
-                />
-              )}
-              {option}
-            </button>
-          ))}
-        </div>
-      </motion.div>
-    </div>
-  );
-};
+// --- Helper Components ---
 
 const WelcomeHero = () => (
   <div className="relative w-full bg-white font-sans" style={{ paddingTop: '4rem', paddingBottom: '3rem' }}>
     {/* Background image - right side on larger screens */}
-    <div className="absolute top-0 right-0 w-full md:w-3/5 lg:w-3/5 h-full">
+    <div className="absolute top-0 right-0 w-full md:w-3/5 lg:w-3/5 h-full hidden md:block">
       <img
         src={heroStudentsImg}
         alt="Arambha Team"
@@ -296,12 +202,12 @@ const WelcomeHero = () => (
         </div>
 
         {/* Main heading */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5 font-serif italic" style={{ color: COLORS.primary }}>
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-5 font-serif italic" style={{ color: COLORS.primary }}>
           Build Your Career with <span style={{ color: COLORS.gold }}>Arambha</span>
         </h1>
 
         {/* Subheading / Description */}
-        <p className="text-base sm:text-lg mb-8 font-sans leading-relaxed max-w-lg" style={{ color: '#4b5563' }}>
+        <p className="text-lg sm:text-xl mb-8 font-sans leading-relaxed max-w-lg" style={{ color: '#4b5563' }}>
           We go beyond jobs. We create growth opportunities for ambitious, result-driven individuals who are ready to make an impact.
         </p>
 
@@ -316,34 +222,69 @@ const WelcomeHero = () => (
   </div>
 );
 
+const Dropdown = ({ value, onChange, options, icon: Icon, placeholder }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="flex-1 lg:w-[160px] flex items-center px-4 border-b sm:border-b-0 sm:border-r border-gray-100 min-h-[60px] relative cursor-pointer" ref={dropdownRef} onClick={() => setIsOpen(!isOpen)}>
+      <Icon className="w-4 h-4 mr-2 flex-shrink-0" style={{ color: COLORS.gold }} />
+      <div className="flex-1 text-xs font-bold text-gray-700 truncate font-sans">
+        {value || placeholder}
+      </div>
+      <div className={`absolute right-4 pointer-events-none transition-transform duration-200 ${isOpen ? 'rotate-180 -translate-y-1' : ''}`}>
+        <div className="w-2.5 h-2.5 border-r-2 border-b-2 border-gray-400 rotate-45 mb-1"></div>
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-[110%] left-0 w-full min-w-[160px] bg-white border border-gray-100 rounded-xl shadow-xl z-50 overflow-hidden py-1" onClick={e => e.stopPropagation()}>
+          <div className="max-h-60 overflow-y-auto">
+            <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-xs font-bold text-gray-700 font-sans transition-colors" onClick={() => { onChange(''); setIsOpen(false); }}>
+              {placeholder}
+            </div>
+            {options.map((opt: string) => (
+              <div key={opt} className={`px-4 py-2 hover:bg-slate-50 cursor-pointer text-xs font-bold font-sans transition-colors ${value === opt ? 'bg-slate-50' : 'text-gray-700'}`} style={value === opt ? { color: COLORS.primary } : {}} onClick={() => { onChange(opt); setIsOpen(false); }}>
+                {opt}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const JobFilter = ({ onSearch }: { onSearch: (filters: { search: string; location: string; department: string; experience: string }) => void }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('All Locations');
-  const [department, setDepartment] = useState('Department');
-  const [experience, setExperience] = useState('Experience');
+  const [location, setLocation] = useState('');
+  const [department, setDepartment] = useState('');
+  const [experience, setExperience] = useState('');
 
   const handleSearch = () => {
     onSearch({
       search: searchTerm,
-      location: location === 'All Locations' ? '' : location,
-      department: department === 'Department' ? '' : department,
-      experience: experience === 'Experience' ? '' : experience
+      location: location,
+      department: department,
+      experience: experience
     });
   };
 
-  const LOCATIONS = ['All Locations', 'Bangalore', 'Remote', 'Mumbai', 'Delhi', 'Hyderabad', 'Pune'];
-  const DEPARTMENTS = ['Department', 'Marketing', 'Sales', 'HR', 'Strategy', 'Partnerships'];
-  const EXPERIENCES = ['Experience', 'Fresher', '0-2 Years', '1-3 Years', '2-4 Years', '2-5 Years', '3-5 Years', '4-6 Years', '5+ Years'];
-
   return (
-    <div className="relative mb-16 z-30 px-4 font-sans">
-      <div 
-        className={`bg-white p-2 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col lg:flex-row items-stretch transition-all duration-500 ease-out`} 
-        style={isFocused ? { boxShadow: `0 0 0 4px ${COLORS.gold}22, 0 20px 40px rgba(0,0,0,0.1)`, transform: 'translateY(-2px)' } : {}}
-      >
-        <div className="flex-grow flex items-center px-5 border-b lg:border-b-0 lg:border-r border-gray-100 min-h-[64px]">
-          <Search className={`w-5 h-5 mr-3.5 transition-all duration-300 ${isFocused ? 'scale-110' : ''}`} style={{ color: isFocused ? COLORS.gold : '#9ca3af' }} />
+    <div className="relative mb-16 z-20 px-4 font-sans">
+      <div className={`bg-white p-2 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col lg:flex-row items-stretch transition-all duration-300`} style={isFocused ? { boxShadow: `0 0 0 4px ${COLORS.gold}33, 0 10px 40px rgba(0,0,0,0.08)`, transform: 'translateY(-2px)' } : {}}>
+        <div className="flex-grow flex items-center px-4 border-b lg:border-b-0 lg:border-r border-gray-100 min-h-[60px]">
+          <Search className="w-5 h-5 mr-3 transition-colors" style={{ color: isFocused ? COLORS.gold : '#9ca3af' }} />
           <input
             type="text"
             placeholder="Search for your dream role..."
@@ -352,59 +293,42 @@ const JobFilter = ({ onSearch }: { onSearch: (filters: { search: string; locatio
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-gray-400 font-sans tracking-tight"
+            className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-gray-400 font-sans"
             style={{ color: COLORS.primary }}
           />
         </div>
-
         <div className="flex flex-col sm:flex-row flex-shrink-0">
-          <div className="border-b sm:border-b-0 sm:border-r border-gray-100 flex items-center">
-            <CustomDropdown 
-              label="All Locations" 
-              options={LOCATIONS} 
-              value={location} 
-              onChange={setLocation} 
-              icon={MapPin} 
-            />
-          </div>
-          
-          <div className="border-b sm:border-b-0 sm:border-r border-gray-100 flex items-center">
-            <CustomDropdown 
-              label="Department" 
-              options={DEPARTMENTS} 
-              value={department} 
-              onChange={setDepartment} 
-              icon={Briefcase} 
-            />
-          </div>
-
-          <div className="sm:border-r border-gray-100 flex items-center">
-            <CustomDropdown 
-              label="Experience" 
-              options={EXPERIENCES} 
-              value={experience} 
-              onChange={setExperience} 
-              icon={GraduationCap} 
-            />
-          </div>
-        </div>
-
-        <button 
-          onClick={handleSearch} 
-          className="relative overflow-hidden text-white lg:px-12 px-6 min-h-[60px] lg:min-h-0 rounded-xl font-bold text-sm uppercase tracking-[0.15em] transition-all duration-300 active:scale-95 m-1 font-serif italic group" 
-          style={{ backgroundColor: COLORS.primary }}
-        >
-          <span className="relative z-10">Search</span>
-          <div 
-            className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          <Dropdown
+            icon={MapPin}
+            value={location}
+            onChange={setLocation}
+            placeholder="All Locations"
+            options={['Bangalore', 'Remote', 'Mumbai', 'Delhi', 'Hyderabad', 'Pune']}
           />
+          <Dropdown
+            icon={Briefcase}
+            value={department}
+            onChange={setDepartment}
+            placeholder="Department"
+            options={['Marketing', 'Sales', 'HR', 'Strategy', 'Partnerships']}
+          />
+          <Dropdown
+            icon={GraduationCap}
+            value={experience}
+            onChange={setExperience}
+            placeholder="Experience"
+            options={['Fresher', '0-2 Years', '1-3 Years', '2-4 Years', '2-5 Years', '3-5 Years', '4-6 Years', '5+ Years']}
+          />
+        </div>
+        <button onClick={handleSearch} className="text-white lg:px-10 px-4 min-h-[60px] lg:min-h-0 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 m-1 font-serif italic" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.gold} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>
+          Search
         </button>
       </div>
     </div>
   );
 };
 
-const CourseCard = ({ course }: { course: Job }) => (
+const CourseCard = ({ course, onApply }: { course: Job, onApply?: () => void }) => (
   <motion.div
     className="flex-shrink-0 w-full flex flex-col gap-3 p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow duration-300 font-sans"
     whileHover={{ y: -8 }}
@@ -438,21 +362,21 @@ const CourseCard = ({ course }: { course: Job }) => (
           { icon: GraduationCap, text: course.experience },
           { icon: Banknote, text: course.salary, bold: true }
         ].map((info, i) => (
-          <div key={i} className="flex items-center gap-2 text-[11px]" style={{ color: info.bold ? COLORS.primary : '#4b5563', fontWeight: info.bold ? 'bold' : 'normal' }}>
-            <info.icon className="w-3.5 h-3.5" style={{ color: COLORS.gold }} />
+          <div key={i} className="flex items-center gap-2 text-sm" style={{ color: info.bold ? COLORS.primary : '#4b5563', fontWeight: info.bold ? 'bold' : 'normal' }}>
+            <info.icon className="w-4 h-4" style={{ color: COLORS.gold }} />
             <span>{info.text}</span>
           </div>
         ))}
       </div>
-      <button className="mt-2 w-full text-white py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm group font-serif italic" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>
+      <button onClick={onApply} className="mt-2 w-full text-white py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-sm group font-serif italic" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>
         Apply Now
-        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </button>
     </div>
   </motion.div>
 );
 
-const CourseCarousel = ({ title, subtitle, courses, id }: { title?: string, subtitle?: string, courses: Job[], id: string }) => {
+const CourseCarousel = ({ title, subtitle, courses, id, onApply }: { title?: string, subtitle?: string, courses: Job[], id: string, onApply: (title: string) => void }) => {
   return (
     <section className="py-8 font-sans">
       {title && (
@@ -474,25 +398,25 @@ const CourseCarousel = ({ title, subtitle, courses, id }: { title?: string, subt
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6 pt-2">
         {courses.map(c => (
           /* @ts-ignore - key is reserved */
-          <CourseCard key={c.id} course={c} />
+          <CourseCard key={c.id} course={c} onApply={() => onApply(c.title)} />
         ))}
         {courses.length === 0 && (
-           <>
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-[320px] rounded-2xl border border-gray-100 flex flex-col p-4 animate-pulse" style={{ backgroundColor: '#F3F6FF' }}>
-                  <div className="w-full aspect-[16/10] bg-gray-50 rounded-lg mb-4" />
-                  <div className="h-4 bg-gray-50 rounded w-3/4 mb-2" />
-                  <div className="h-4 bg-gray-50 rounded w-1/2" />
-                </div>
-              ))}
-           </>
+          <>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-[320px] rounded-2xl border border-gray-100 flex flex-col p-4 animate-pulse" style={{ backgroundColor: '#F3F6FF' }}>
+                <div className="w-full aspect-[16/10] bg-gray-50 rounded-lg mb-4" />
+                <div className="h-4 bg-gray-50 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-gray-50 rounded w-1/2" />
+              </div>
+            ))}
+          </>
         )}
       </div>
     </section>
   );
 };
 
-const FeaturedCourse = () => (
+const FeaturedCourse = ({ onApply }: { onApply: (title: string) => void }) => (
   <section className="py-12 font-sans">
     <div className="flex items-center justify-between mb-6">
       <h2 className="text-2xl font-bold font-serif italic" style={{ color: COLORS.primary }}>Opportunity Spotlight</h2>
@@ -511,15 +435,15 @@ const FeaturedCourse = () => (
         <h3 className="text-3xl font-extrabold leading-tight mb-2 font-serif italic" style={{ color: COLORS.primary }}>Strategic Lead Generation Lead (SaaS)</h3>
         <p className="text-base text-gray-600 font-medium max-w-xl font-sans">We're looking for a high-impact individual to lead market expansion efforts. Focus on identifying business opportunities and pipelines.</p>
         <div className="grid grid-cols-2 gap-4 max-w-sm font-sans">
-           {[{l:'Salary',v:'₹15 - ₹22 LPA'},{l:'Experience',v:'4+ Years'},{l:'Location',v:'Bangalore'},{l:'Type',v:'Full-time'}].map(item => (
-             <div key={item.l} className="flex flex-col">
-               <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">{item.l}</span>
-               <span className="text-sm font-bold" style={{ color: COLORS.primary }}>{item.v}</span>
-             </div>
-           ))}
+          {[{ l: 'Salary', v: '₹15 - ₹22 LPA' }, { l: 'Experience', v: '4+ Years' }, { l: 'Location', v: 'Bangalore' }, { l: 'Type', v: 'Full-time' }].map(item => (
+            <div key={item.l} className="flex flex-col">
+              <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">{item.l}</span>
+              <span className="text-sm font-bold" style={{ color: COLORS.primary }}>{item.v}</span>
+            </div>
+          ))}
         </div>
         <div className="flex items-center gap-4 mt-2 font-serif italic">
-          <button className="text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition-all" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>Apply Now</button>
+          <button onClick={() => onApply('Strategic Lead Generation Lead')} className="text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition-all" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>Apply Now</button>
           <button className="font-bold transition-colors" style={{ color: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.gold} onMouseLeave={(e) => e.currentTarget.style.color = COLORS.primary}>Role Overview</button>
         </div>
       </div>
@@ -543,7 +467,7 @@ const GoogleSection = () => (
       ].map((v, i) => (
         <motion.div key={i} className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all group" whileHover={{ y: -10 }}>
           <div className="h-48 overflow-hidden relative">
-             <img src={v.img} alt={v.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <img src={v.img} alt={v.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
           </div>
           <div className="p-6">
             <h4 className="text-lg font-black mb-1 font-serif italic" style={{ color: COLORS.primary }}>{v.title}</h4>
@@ -558,6 +482,7 @@ const GoogleSection = () => (
 // --- Registration Form Component ---
 
 interface FormData {
+  roleApplied: string;
   name: string;
   email: string;
   phone: string;
@@ -577,10 +502,12 @@ interface FormData {
   githubUrl: string;
   referenceName: string;
   resume: File | null;
+  customRole?: string;
 }
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied }: { isModal?: boolean, isOpen?: boolean, onClose?: () => void, roleApplied?: string }) => {
   const [formData, setFormData] = useState<FormData>({
+    roleApplied: roleApplied || '',
     name: '',
     email: '',
     phone: '',
@@ -600,10 +527,52 @@ const RegistrationForm = () => {
     githubUrl: '',
     referenceName: '',
     resume: null,
+    customRole: '',
   });
+
+  useEffect(() => {
+    if (roleApplied) {
+      setFormData(prev => ({ ...prev, roleApplied }));
+    }
+  }, [roleApplied]);
+
+  // ── SCROLL LOCK ──────────────────────────────────────────────
+  // Locks the BODY when modal is open so the background page
+  // cannot scroll. Restored on close / unmount.
+  useEffect(() => {
+    if (!isModal) return;
+    if (isOpen) {
+      // Preserve current scroll position so the page doesn't jump
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+    } else {
+      const scrollY = Math.abs(parseInt(document.body.style.top || "0", 10));
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollY);
+    }
+    return () => {
+      const scrollY = Math.abs(parseInt(document.body.style.top || "0", 10));
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, [isModal, isOpen]);
 
   const [resumeFileName, setResumeFileName] = useState('');
   const dragRef = useRef<HTMLDivElement>(null);
+  // ── REF for the scrollable inner container ───────────────────
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -653,397 +622,489 @@ const RegistrationForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your application! We will review it shortly.');
+    const finalData = { ...formData };
+    if (roleApplied === 'custom') {
+      finalData.roleApplied = formData.customRole || '';
+    }
+    console.log("Form submitted:", finalData);
+    alert("Thank you for your application! We will review it shortly.");
+    if (onClose) onClose();
   };
 
-  return (
-    <section className="py-16 font-sans" style={{ backgroundColor: '#f8f9fb' }}>
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Title Section */}
+  if (isModal && !isOpen) return null;
+
+  const formContent = (
+    <>
+      {/* Title Section */}
+      <div className={`mb-10 ${isModal ? 'text-center' : ''}`}>
+        <h2 className="text-3xl sm:text-4xl font-bold mb-3 font-serif italic" style={{ color: COLORS.primary }}>
+          {isModal ? 'Job Application' : 'Registration Form'}
+        </h2>
+        <p className="text-base text-gray-600 font-sans" style={{ color: '#4b5563' }}>
+          Please fill out all the required information
+        </p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className={isModal ? "" : "bg-white p-8 rounded-lg border"} style={isModal ? {} : { borderColor: '#e5e7eb' }}>
+        {/* Section A: Personal Information */}
         <div className="mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3 font-serif italic" style={{ color: COLORS.primary }}>
-            Registration Form
-          </h2>
-          <p className="text-base text-gray-600 font-sans" style={{ color: '#4b5563' }}>
-            Please fill out all the required information
-          </p>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg border" style={{ borderColor: '#e5e7eb' }}>
-          {/* Section A: Personal Information */}
-          <div className="mb-10">
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Personal Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col">
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Personal Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isModal && roleApplied && roleApplied !== 'custom' && (
+              <div className="flex flex-col md:col-span-2">
                 <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Name <span style={{ color: COLORS.gold }}>*</span>
+                  Role Applied For
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="Your full name"
+                  value={formData.roleApplied}
+                  readOnly
+                  className="px-4 py-3 border rounded-lg text-sm font-sans bg-gray-50 text-gray-500 font-semibold cursor-not-allowed"
+                  style={{ borderColor: '#e5e7eb' }}
                 />
               </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Email <span style={{ color: COLORS.gold }}>*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="your@email.com"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Phone Number <span style={{ color: COLORS.gold }}>*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="+91 XXXXX XXXXX"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  WhatsApp Number <span style={{ color: COLORS.gold }}>*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="whatsapp"
-                  value={formData.whatsapp}
-                  onChange={handleInputChange}
-                  required
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="+91 XXXXX XXXXX"
-                />
-              </div>
+            )}
+            {isModal && roleApplied === 'custom' && (
               <div className="flex flex-col md:col-span-2">
                 <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Address <span style={{ color: COLORS.gold }}>*</span>
+                  Interested Role <span style={{ color: COLORS.gold }}>*</span>
                 </label>
+                <p className="text-xs text-gray-500 mb-2 font-sans">
+                  Tell us the role you're interested in
+                </p>
                 <input
                   type="text"
-                  name="address"
-                  value={formData.address}
+                  name="customRole"
+                  value={formData.customRole || ""}
                   onChange={handleInputChange}
                   required
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
+                  className="px-4 py-3 border rounded-lg text-sm font-sans"
                   style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="Full address"
+                  placeholder="Enter the role you are looking for"
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Section B: Skills & Interests */}
-          <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Skills & Interests
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col md:col-span-2">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Skills
-                </label>
-                <textarea
-                  name="skills"
-                  value={formData.skills}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="List your key skills, separated by commas or newlines"
-                />
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Area of Interest
-                </label>
-                <textarea
-                  name="areaOfInterest"
-                  value={formData.areaOfInterest}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="What areas are you interested in?"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section C: Education */}
-          <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Education
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Course
-                </label>
-                <select
-                  name="course"
-                  value={formData.course}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                >
-                  <option value="">Select a course</option>
-                  <option value="B.Tech">B.Tech</option>
-                  <option value="B.Sc">B.Sc</option>
-                  <option value="B.Com">B.Com</option>
-                  <option value="B.A">B.A</option>
-                  <option value="MBA">MBA</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Others
-                </label>
-                <input
-                  type="text"
-                  name="others"
-                  value={formData.others}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="If other, please specify"
-                />
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  College Name
-                </label>
-                <input
-                  type="text"
-                  name="collegeName"
-                  value={formData.collegeName}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="Your college name"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Year of Passing
-                </label>
-                <input
-                  type="text"
-                  name="yearOfPassing"
-                  value={formData.yearOfPassing}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="YYYY"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Highest Education Qualification
-                </label>
-                <select
-                  name="highestEducation"
-                  value={formData.highestEducation}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                >
-                  <option value="">Select qualification</option>
-                  <option value="10th">10th</option>
-                  <option value="12th">12th</option>
-                  <option value="Graduate">Graduate</option>
-                  <option value="Post Graduate">Post Graduate</option>
-                </select>
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Certifications
-                </label>
-                <textarea
-                  name="certifications"
-                  value={formData.certifications}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="List your certifications, if any"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section D: Work Experience */}
-          <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Work Experience
-            </h3>
+            )}
             <div className="flex flex-col">
               <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                Work Experience Status
+                Name <span style={{ color: COLORS.gold }}>*</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="Your full name"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Email <span style={{ color: COLORS.gold }}>*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="your@email.com"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Phone Number <span style={{ color: COLORS.gold }}>*</span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="+91 XXXXX XXXXX"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                WhatsApp Number <span style={{ color: COLORS.gold }}>*</span>
+              </label>
+              <input
+                type="tel"
+                name="whatsapp"
+                value={formData.whatsapp}
+                onChange={handleInputChange}
+                required
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="+91 XXXXX XXXXX"
+              />
+            </div>
+            <div className="flex flex-col md:col-span-2">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Address <span style={{ color: COLORS.gold }}>*</span>
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                required
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="Full address"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section B: Skills & Interests */}
+        <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Skills & Interests
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col md:col-span-2">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Skills
+              </label>
+              <textarea
+                name="skills"
+                value={formData.skills}
+                onChange={handleInputChange}
+                rows={4}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="List your key skills, separated by commas or newlines"
+              />
+            </div>
+            <div className="flex flex-col md:col-span-2">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Area of Interest
+              </label>
+              <textarea
+                name="areaOfInterest"
+                value={formData.areaOfInterest}
+                onChange={handleInputChange}
+                rows={4}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="What areas are you interested in?"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section C: Education */}
+        <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Education
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Course
               </label>
               <select
-                name="workExperienceStatus"
-                value={formData.workExperienceStatus}
+                name="course"
+                value={formData.course}
                 onChange={handleInputChange}
                 className="px-4 py-2.5 border rounded text-sm font-sans"
                 style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
               >
-                <option value="">Select status</option>
-                <option value="Fresher">Fresher</option>
-                <option value="0-2 Years">0-2 Years</option>
-                <option value="2-4 Years">2-4 Years</option>
-                <option value="4-6 Years">4-6 Years</option>
-                <option value="6+ Years">6+ Years</option>
+                <option value="">Select a course</option>
+                <option value="B.Tech">B.Tech</option>
+                <option value="B.Sc">B.Sc</option>
+                <option value="B.Com">B.Com</option>
+                <option value="B.A">B.A</option>
+                <option value="MBA">MBA</option>
+                <option value="Other">Other</option>
               </select>
             </div>
-          </div>
-
-          {/* Section E: Professional Links */}
-          <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Professional Links
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Portfolio URL
-                </label>
-                <input
-                  type="url"
-                  name="portfolioUrl"
-                  value={formData.portfolioUrl}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="https://your-portfolio.com"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  LinkedIn URL
-                </label>
-                <input
-                  type="url"
-                  name="linkedinUrl"
-                  value={formData.linkedinUrl}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="https://linkedin.com/in/yourprofile"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  GitHub URL
-                </label>
-                <input
-                  type="url"
-                  name="githubUrl"
-                  value={formData.githubUrl}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="https://github.com/yourprofile"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
-                  Reference Name
-                </label>
-                <input
-                  type="text"
-                  name="referenceName"
-                  value={formData.referenceName}
-                  onChange={handleInputChange}
-                  className="px-4 py-2.5 border rounded text-sm font-sans"
-                  style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                  placeholder="Name of reference"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section F: Resume Upload */}
-          <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
-            <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
-              Resume Upload
-            </h3>
-            <div
-              ref={dragRef}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className="p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors"
-              style={{ borderColor: '#e5e7eb' }}
-            >
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                className="hidden"
-                id="resume-upload"
-              />
-              <label htmlFor="resume-upload" className="cursor-pointer">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.gold + '20' }}>
-                    <span style={{ color: COLORS.gold, fontSize: '20px' }}>📎</span>
-                  </div>
-                  <p className="text-sm font-bold font-sans" style={{ color: COLORS.primary }}>
-                    Drag & drop your resume here
-                  </p>
-                  <p className="text-xs text-gray-400 font-sans">
-                    or click to browse
-                  </p>
-                  <p className="text-xs text-gray-400 font-sans mt-1">
-                    PDF, DOC, DOCX (max 5MB)
-                  </p>
-                </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Others
               </label>
-              {resumeFileName && (
-                <p className="text-sm mt-4 font-sans" style={{ color: COLORS.gold }}>
-                  ✓ {resumeFileName}
-                </p>
-              )}
+              <input
+                type="text"
+                name="others"
+                value={formData.others}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="If other, please specify"
+              />
+            </div>
+            <div className="flex flex-col md:col-span-2">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                College Name
+              </label>
+              <input
+                type="text"
+                name="collegeName"
+                value={formData.collegeName}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="Your college name"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Year of Passing
+              </label>
+              <input
+                type="text"
+                name="yearOfPassing"
+                value={formData.yearOfPassing}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="YYYY"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Highest Education Qualification
+              </label>
+              <select
+                name="highestEducation"
+                value={formData.highestEducation}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+              >
+                <option value="">Select qualification</option>
+                <option value="10th">10th</option>
+                <option value="12th">12th</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Post Graduate">Post Graduate</option>
+              </select>
+            </div>
+            <div className="flex flex-col md:col-span-2">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Certifications
+              </label>
+              <textarea
+                name="certifications"
+                value={formData.certifications}
+                onChange={handleInputChange}
+                rows={3}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="List your certifications, if any"
+              />
             </div>
           </div>
+        </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="text-white px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all font-serif italic"
-              style={{ backgroundColor: COLORS.primary }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}
+        {/* Section D: Work Experience */}
+        <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Work Experience
+          </h3>
+          <div className="flex flex-col">
+            <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+              Work Experience Status
+            </label>
+            <select
+              name="workExperienceStatus"
+              value={formData.workExperienceStatus}
+              onChange={handleInputChange}
+              className="px-4 py-2.5 border rounded text-sm font-sans"
+              style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
             >
-              Submit Registration
-            </button>
+              <option value="">Select status</option>
+              <option value="Fresher">Fresher</option>
+              <option value="0-2 Years">0-2 Years</option>
+              <option value="2-4 Years">2-4 Years</option>
+              <option value="4-6 Years">4-6 Years</option>
+              <option value="6+ Years">6+ Years</option>
+            </select>
           </div>
-        </form>
+        </div>
+
+        {/* Section E: Professional Links */}
+        <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Professional Links
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Portfolio URL
+              </label>
+              <input
+                type="url"
+                name="portfolioUrl"
+                value={formData.portfolioUrl}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="https://your-portfolio.com"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                LinkedIn URL
+              </label>
+              <input
+                type="url"
+                name="linkedinUrl"
+                value={formData.linkedinUrl}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="https://linkedin.com/in/yourprofile"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                GitHub URL
+              </label>
+              <input
+                type="url"
+                name="githubUrl"
+                value={formData.githubUrl}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="https://github.com/yourprofile"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-bold mb-2 font-sans" style={{ color: COLORS.primary }}>
+                Reference Name
+              </label>
+              <input
+                type="text"
+                name="referenceName"
+                value={formData.referenceName}
+                onChange={handleInputChange}
+                className="px-4 py-2.5 border rounded text-sm font-sans"
+                style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
+                placeholder="Name of reference"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section F: Resume Upload */}
+        <div className="mb-10 pb-10 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h3 className="text-xl font-bold mb-6 font-serif italic" style={{ color: COLORS.primary }}>
+            Resume Upload
+          </h3>
+          <div
+            ref={dragRef}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className="p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors"
+            style={{ borderColor: '#e5e7eb' }}
+          >
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+              className="hidden"
+              id="resume-upload"
+            />
+            <label htmlFor="resume-upload" className="cursor-pointer">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.gold + '20' }}>
+                  <span style={{ color: COLORS.gold, fontSize: '20px' }}>📎</span>
+                </div>
+                <p className="text-sm font-bold font-sans" style={{ color: COLORS.primary }}>
+                  Drag & drop your resume here
+                </p>
+                <p className="text-xs text-gray-400 font-sans">
+                  or click to browse
+                </p>
+                <p className="text-xs text-gray-400 font-sans mt-1">
+                  PDF, DOC, DOCX (max 5MB)
+                </p>
+              </div>
+            </label>
+            {resumeFileName && (
+              <p className="text-sm mt-4 font-sans" style={{ color: COLORS.gold }}>
+                ✓ {resumeFileName}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="text-white px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all font-serif italic"
+            style={{ backgroundColor: COLORS.primary }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}
+          >
+            Submit Registration
+          </button>
+        </div>
+      </form>
+    </>
+  );
+
+  // ── MODAL RENDER — THE FIX IS HERE ──────────────────────────
+  if (isModal) {
+    return (
+      <div
+        // Overlay: intercepts ALL wheel + touch events so they NEVER
+        // reach the background page.
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+        onWheel={(e) => e.stopPropagation()}           // ← blocks trackpad/mouse wheel on overlay
+        onTouchMove={(e) => e.preventDefault()}        // ← blocks touch-drag on overlay
+      >
+        <div
+          // Modal card: a proper scroll container with a hard max-height.
+          // onWheel stopPropagation here ensures wheel events consumed
+          // by THIS div do NOT bubble up to the overlay → no page scroll.
+          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl relative flex flex-col"
+          style={{ maxHeight: "90vh" }}
+          onClick={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}         // ← wheel stays inside modal
+          onTouchMove={(e) => e.stopPropagation()}     // ← touch-drag stays inside modal
+        >
+          {/* Close button — fixed inside modal, not inside scroll area */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 text-gray-500 hover:text-gray-800 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+          >
+            ✕
+          </button>
+
+          {/* Scrollable area — the ONLY place that scrolls */}
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-y-auto p-8 sm:p-10 rounded-2xl [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+            style={{
+              overscrollBehavior: "contain",   // ← prevents scroll chaining to page
+              WebkitOverflowScrolling: "touch", // ← smooth momentum on iOS
+            }}
+          >
+            {formContent}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <section className="py-16 font-sans" style={{ backgroundColor: '#f8f9fb' }}>
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {formContent}
       </div>
     </section>
   );
@@ -1054,6 +1115,8 @@ const RegistrationForm = () => {
 export default function App() {
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('');
 
   const allJobs = [...JOB_LISTINGS, ...MORE_JOBS];
 
@@ -1096,7 +1159,8 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8f9fb] font-sans" id="app-root" style={{ color: COLORS.primary }}>
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
 
         :root {
@@ -1132,7 +1196,7 @@ export default function App() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6 pt-2">
               {filteredJobs.map(job => (
-                <CourseCard key={job.id} course={job} />
+                <CourseCard key={job.id} course={job} onApply={() => { setSelectedRole(job.title); setIsModalOpen(true); }} />
               ))}
               {filteredJobs.length === 0 && (
                 <div className="col-span-full text-center py-12">
@@ -1143,13 +1207,36 @@ export default function App() {
           </div>
         ) : (
           <>
-            <CourseCarousel id="active-hires" title="Active Hiring" subtitle="Top roles based on your profile" courses={JOB_LISTINGS} />
-            <CourseCarousel id="sales-roles" title="Business Development & Sales" subtitle='Join our high-performance growth engine' courses={MORE_JOBS.filter(j => j.department === 'Sales' || j.department === 'Marketing / Sales')} />
-            <CourseCarousel id="internships" title="Campus Partnerships & Internships" subtitle="Start your career journey with us" courses={MORE_JOBS.filter(j => j.experience.toLowerCase().includes('fresher') || j.experience.toLowerCase().includes('student'))} />
+            <CourseCarousel id="active-hires" title="Active Hiring" subtitle="Top roles based on your profile" courses={JOB_LISTINGS} onApply={(title) => { setSelectedRole(title); setIsModalOpen(true); }} />
+            <CourseCarousel id="sales-roles" title="Business Development & Sales" subtitle='Join our high-performance growth engine' courses={MORE_JOBS.filter(j => j.department === 'Sales' || j.department === 'Marketing / Sales')} onApply={(title) => { setSelectedRole(title); setIsModalOpen(true); }} />
+            <CourseCarousel id="internships" title="Campus Partnerships & Internships" subtitle="Start your career journey with us" courses={MORE_JOBS.filter(j => j.experience.toLowerCase().includes('fresher') || j.experience.toLowerCase().includes('student'))} onApply={(title) => { setSelectedRole(title); setIsModalOpen(true); }} />
           </>
         )}
 
-        <RegistrationForm />
+        {/* CTA Section */}
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center border-t border-gray-100 mt-8">
+          <h3 className="text-3xl sm:text-4xl font-extrabold mb-4 font-serif italic" style={{ color: COLORS.primary }}>
+            Didn't find a role that fits you?
+          </h3>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto font-sans">
+            We are always looking for talented people. Tell us what you're interested in.
+          </p>
+          <button
+            onClick={() => {
+              setSelectedRole('custom');
+              setIsModalOpen(true);
+            }}
+            className="w-full sm:w-auto text-white px-10 py-4 rounded-xl font-bold hover:shadow-lg transition-all font-serif italic text-lg"
+            style={{ backgroundColor: COLORS.primary }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = COLORS.gold)}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = COLORS.primary)}
+          >
+            Apply for Your Role
+          </button>
+        </div>
+
+
+        <RegistrationForm isModal={true} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} roleApplied={selectedRole} />
 
         <GoogleSection />
       </main>
