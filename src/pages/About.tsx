@@ -69,7 +69,7 @@ const Hero = () => (
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className=" text-base sm:text-lg md:text-xl text-[#02367B] mb-8 md:mb-10 w-full max-w-[90%] md:max-w-md lg:max-w-lg xl:max-w-xl font-sans ml-0 lg:ml-10 leading-relaxed"
+          className=" text-[13px] sm:text-[15px] md:text-[17px] text-[#475569] mb-8 md:mb-10 w-full max-w-[90%] md:max-w-md lg:max-w-lg xl:max-w-xl font-sans ml-0 lg:ml-10 leading-relaxed drop-shadow-sm"
         >
           A Decade of Disruption, Growth & Transformational Impact. We are not just an institution; we are the bridge between potential and excellence.
         </motion.p>
@@ -79,7 +79,7 @@ const Hero = () => (
 );
 
 const Stats = () => (
-  <section className="py-12 bg-white relative z-20 border-b border-outline-variant/30">
+  <section className="py-20 bg-white relative z-20 border-b border-outline-variant/30">
     <div className="max-w-7xl mx-auto px-6 overflow-x-auto">
 
       {/* ✅ FORCE SINGLE LINE */}
@@ -208,7 +208,7 @@ function TimelineItem({ year, title, description, icon: Icon, subTitle, subDesc,
 }
 
 const Evolution = () => (
-  <section className="pt-32 pb-16 bg-white relative overflow-hidden">
+  <section className="pt-0 pb-16 bg-white relative overflow-hidden">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-24">
         <h2 className="text-5xl md:text-6xl font-serif font-extrabold text-primary mb-6 italic">Our Evolution</h2>

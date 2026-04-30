@@ -28,7 +28,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-white font-sans flex items-center justify-center">
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
 
         :root {
@@ -44,24 +45,31 @@ export default function Login() {
           font-family: var(--font-sans), sans-serif;
         }
       `}} />
-      
+
       <div className="flex w-full min-h-screen">
         {/* Left Side - Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 md:p-16 bg-white">
+        <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center p-8 sm:p-12 bg-white pt-16 sm:pt-24 md:pt-32 lg:pt-0">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="w-full max-w-md"
           >
-            <div className="mb-10">
-              <h1 className="font-serif text-4xl text-primary mb-3 font-bold italic">Welcome Back</h1>
+            <div className="mb-10 text-center lg:text-left">
+              <Link to="/" className="inline-flex lg:hidden mb-8 group transition-all">
+                <img 
+                  src={logo} 
+                  alt="Arambha Logo" 
+                  className="h-48 sm:h-56 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
+                />
+              </Link>
+              <h1 className="font-serif text-3xl sm:text-4xl text-primary mb-2 font-bold italic">Welcome Back</h1>
               <p className="text-sm text-on-surface-variant font-sans">
                 Sign in to access your learning dashboard
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10 lg:space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-primary mb-2 font-sans">
                   Email Address
@@ -127,7 +135,7 @@ export default function Login() {
           {/* Decorative shapes */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-accent-gold/5 blur-3xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 blur-3xl -ml-20 -mb-20"></div>
-          
+
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

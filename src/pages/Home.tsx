@@ -26,27 +26,34 @@ import {
   Compass
 } from "lucide-react";
 
-import heroBg from "../assets/Hero-Bg.png";
+import heroBg from "../assets/high_quality.png";
 import engImg from "../assets/home-english.png";
+import avatars from "../assets/avatars.png";
 
 // Import program images
 import spokenEnglishImg from "../assets/programs/spoken-english-mastery.png";
 import campusToCorporateImg from "../assets/programs/campus-to-corporate.png";
 import fullStackJavaImg from "../assets/programs/full-stack-java.png";
 
+// Import partner logos
+import vtuLogo from "../assets/partners/vtu.png";
+import startupIndiaLogo from "../assets/partners/startup-india.png";
+import isoLogo from "../assets/partners/iso.png";
+import msmeLogo from "../assets/partners/msme.png";
+
 function LogoBox({ alt, domain }: { alt: string, domain: string }) {
   const customLogos: Record<string, string> = {
-  "tcs.com": "https://i.logos-download.com/113971/29583-s2560-9598f09d0f40cf2bc3d3c47217493980.png/Tata_Consultancy_Services_Logo_2020-s2560.png?dl",
-  "infosys.com": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/500px-Infosys_logo.svg.png",
+    "tcs.com": "https://i.logos-download.com/113971/29583-s2560-9598f09d0f40cf2bc3d3c47217493980.png/Tata_Consultancy_Services_Logo_2020-s2560.png?dl",
+    "infosys.com": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/500px-Infosys_logo.svg.png",
 
 
-};
+  };
 
-const iconUrl =
-  customLogos[domain] ||
-  `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
+  const iconUrl =
+    customLogos[domain] ||
+    `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-  
+
   return (
     <div className="flex-shrink-0 px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm flex flex-col items-center justify-center min-w-[200px] h-32 hover:border-accent-gold hover:shadow-lg transition-all group gap-2">
 
@@ -70,7 +77,7 @@ const iconUrl =
 
 export default function Home() {
   const navigate = useNavigate();
-  
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -94,7 +101,8 @@ export default function Home() {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
 
         :root {
@@ -112,23 +120,23 @@ export default function Home() {
       `}} />
       {/* Hero Section */}
       <section
-        className="relative pt-28 sm:pt-32 pb-20 sm:pb-40 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
+        className="relative pt-28 sm:pt-32 pb-12 sm:pb-20 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         {/* Subtle overlay for mobile readability */}
         <div className="absolute inset-0 bg-white/40 md:hidden pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 lg:pl-32 lg:pr-20 text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="w-full"
           >
-            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-5xl md:text-7xl text-primary mb-6 leading-[1.1] font-extrabold italic tracking-tight">
+            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-5xl md:text-7xl text-primary mb-6 leading-[1.1] font-extrabold italic tracking-tight lg:max-w-xl">
               From Learning to <span className="text-accent-gold">Earning</span> – Start Your Journey Today.
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-[#2A3F65] mb-10 max-w-xl mx-auto lg:mx-0 font-sans leading-relaxed font-medium">
+            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-[#475569] mb-10 max-w-[85%] sm:max-w-md lg:max-w-md mx-auto lg:mx-0 font-sans leading-relaxed font-medium">
               Speak confidently, gain skills, and step into your career. We bridge the gap between where you are and where you want to be with academic excellence.
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start mb-8 sm:mb-12">
@@ -181,7 +189,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 sm:py-16 bg-white border-y border-outline-variant font-sans">
+      <section className="py-8 sm:py-12 bg-white border-y border-outline-variant font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             variants={containerVariants}
@@ -269,7 +277,7 @@ export default function Home() {
       <section className="py-8 sm:py-12 bg-white border-t border-slate-100 overflow-hidden font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-6 items-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
               whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.5 }}
@@ -344,11 +352,15 @@ export default function Home() {
               </p>
               <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10 font-sans">
                 <div className="flex -space-x-3">
-                  {[1, 2, 3].map((_, i) => (
-                    <img
+                  {["0.5%", "66.5%", "99.5%"].map((pos, i) => (
+                    <div
                       key={i}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white object-cover shadow-sm"
-                      src={`https://lh3.googleusercontent.com/aida-public/AB6AXuBDTC6EtY5VTVTFA2DQJMWRleZKB0zDDGWNruRWxCQQnpxXj2UhGyBk5wqgEG9FJw98NM1mwqFcNhgWI2BnVYvcqmmPcEQ9DBYDS7lXX-lKkri3FZ3kLzEPNe4f66IlkteGBZwNSAf7HBxAG04ZgevCCBJwWOTcK_RnuPc9Hig3TaSq_75zsoamKSnRX-rh99DvTaxbSlpwAWrNKl7-db_jAh7PVMDrPg2_7DrToe8XqO3tj43iV4sCVXFCaXEAwrCcC_rIVcuFp4E`}
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-sm bg-slate-100 bg-no-repeat"
+                      style={{
+                        backgroundImage: `url(${avatars})`,
+                        backgroundSize: "460% auto",
+                        backgroundPosition: `${pos} center`
+                      }}
                     />
                   ))}
                 </div>
@@ -361,6 +373,49 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* Partner Credentials Section */}
+      <section className="py-12 sm:py-20 bg-white font-sans overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative bg-white rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-12 border-4 border-[#D4AF37]/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(212,175,55,0.08)] transition-all duration-500 overflow-hidden group"
+          >
+            {/* Subtle glow effect */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent-gold/5 rounded-full blur-3xl -mt-32 -mr-32 group-hover:bg-accent-gold/10 transition-colors duration-700"></div>
+            
+            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
+              {/* Heading Side */}
+              <div className="lg:w-1/3 text-center lg:text-left">
+                <h3 className="font-serif text-3xl sm:text-4xl text-primary font-bold leading-tight italic">
+                  Credential Platform Partner
+                </h3>
+              </div>
+
+              {/* Vertical Divider (Desktop) */}
+              <div className="hidden lg:block w-px h-24 bg-slate-200"></div>
+
+              {/* Logos Grid */}
+              <div className="lg:w-2/3 flex flex-wrap items-center justify-center lg:justify-between gap-8 sm:gap-12 md:gap-16">
+                <div className="flex flex-col items-center gap-2">
+                  <img src={vtuLogo} alt="VTU" className="h-20 sm:h-24 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <img src={startupIndiaLogo} alt="Startup India" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <img src={isoLogo} alt="ISO Certified" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <img src={msmeLogo} alt="MSME" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Journey Timeline */}
       <RoadmapSection />
 
@@ -622,14 +677,14 @@ function RoadmapSection() {
                     : { y: 0 }}
                   transition={isActive ? { duration: 2.4, repeat: Infinity, ease: "easeInOut" } : {}}
                   className={`relative w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-3xl flex items-center justify-center mb-5 sm:mb-7 transition-all duration-500 ${isActive
-                      ? "border-2 border-accent-gold shadow-[0_0_24px_4px_rgba(212,175,55,0.25)]"
-                      : "border-2 border-slate-100 shadow-md"
+                    ? "border-2 border-accent-gold shadow-[0_0_24px_4px_rgba(212,175,55,0.25)]"
+                    : "border-2 border-slate-100 shadow-md"
                     }`}
                 >
                   {/* Number badge */}
                   <div className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shadow-md border-2 transition-all duration-500 font-sans ${isActive
-                      ? "bg-accent-gold text-white border-accent-gold"
-                      : "bg-white text-on-surface-variant border-slate-100"
+                    ? "bg-accent-gold text-white border-accent-gold"
+                    : "bg-white text-on-surface-variant border-slate-100"
                     }`}>
                     {i + 1}
                   </div>

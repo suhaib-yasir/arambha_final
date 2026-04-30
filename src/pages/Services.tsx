@@ -92,7 +92,7 @@ export default function Services() {
               <h1 className="font-serif font-extrabold text-[clamp(2rem,5vw,3.6rem)] mb-4 sm:mb-6 leading-[1.05] italic">
                 <span className="text-[#1B2B48]">Our</span> <span className="text-[#D4AF37]">Services</span>
               </h1>
-              <p className="text-[#3A5785] text-base sm:text-[1.1rem] mb-6 sm:mb-8 max-w-[620px] mx-auto lg:mx-0 font-sans leading-[1.6]">
+              <p className="text-[#475569] text-base sm:text-[1.1rem] mb-6 sm:mb-8 max-w-[620px] mx-auto lg:mx-0 font-sans leading-[1.6]">
                 We don't just teach — we help you build a career. From learning to placement, we guide you at every step with practical skills and real opportunities.
               </p>
 
