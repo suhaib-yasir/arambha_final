@@ -36,7 +36,6 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-primary mb-6 font-serif italic text-base uppercase tracking-wider">Contact Us</h4>
           <div className="space-y-4 text-sm text-on-surface-variant font-sans">
-            <ContactInfo icon={MapPin} text="123 Skill Street, Tech Park, India" />
             <ContactInfo icon={Phone} text="+91 91080 32103" />
             <ContactInfo icon={Mail} text="arambhaskilldesignsolutions@gmail.com" />
           </div>
