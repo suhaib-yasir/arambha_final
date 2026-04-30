@@ -354,9 +354,12 @@ export default function Home() {
                 </div>
                 <p className="font-bold text-accent-gold text-sm sm:text-base">5000+ learners enrolled</p>
               </div>
-              <button className="brand-gradient-navy text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold font-serif italic text-sm sm:text-base shadow-xl hover:brightness-110 transition-all uppercase tracking-wide">
+              <Link 
+                to="/programs#technical-programs"
+                className="brand-gradient-navy text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold font-serif italic text-sm sm:text-base shadow-xl hover:brightness-110 transition-all uppercase tracking-wide inline-block"
+              >
                 Start Speaking Today
-              </button>
+              </Link>
             </motion.div>
           </div>
         </div>

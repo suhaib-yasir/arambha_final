@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, GraduationCap, Users, CheckCircle2, Loader2, Cale
 import { getCourses, Course } from "../services/courseService";
 import { useAuth } from "../context/AuthContext";
 import { isUserAdmin } from "../services/adminService";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Import program images
 import spokenEnglishImg from "../assets/programs/spoken-english-mastery.png";
@@ -63,6 +63,19 @@ export default function ProgramsScreen() {
   const [dynamicPrograms, setDynamicPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewVideo, setPreviewVideo] = useState<string | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!loading && location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  }, [loading, location.hash, dynamicPrograms]);
 
   useEffect(() => {
     if (currentUser) {
@@ -277,6 +290,7 @@ export default function ProgramsScreen() {
           selectedCategory === "All" ? (
             <>
               <ProgramSection
+                id="foundational-programs"
                 title="Foundational & Communication Skills"
                 programs={filteredPrograms.slice(0, 3)}
                 onPreview={setPreviewVideo}
@@ -285,6 +299,7 @@ export default function ProgramsScreen() {
                 onEnroll={handleEnroll}
               />
               <ProgramSection
+                id="career-programs"
                 title="Career & Job-Ready Programs"
                 programs={filteredPrograms.slice(3, 6)}
                 onPreview={setPreviewVideo}
@@ -293,6 +308,7 @@ export default function ProgramsScreen() {
                 onEnroll={handleEnroll}
               />
               <ProgramSection
+                id="technical-programs"
                 title="Technical & Professional Programs"
                 programs={filteredPrograms.slice(6)}
                 onPreview={setPreviewVideo}
@@ -395,6 +411,7 @@ export default function ProgramsScreen() {
 }
 
 function ProgramSection({ 
+  id,
   title, 
   programs, 
   onPreview,
@@ -402,6 +419,7 @@ function ProgramSection({
   enrolledProgramIds,
   onEnroll
 }: { 
+  id?: string,
   title: string, 
   programs: any[], 
   onPreview: (url: string) => void,
@@ -410,7 +428,7 @@ function ProgramSection({
   onEnroll: (id: string) => void
 }) {
   return (
-    <section className="mb-20">
+    <section id={id} className="mb-20 scroll-mt-20">
       <div className="text-center mb-2">
         <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold inline-block italic" style={{ color: '#02367B' }}>{title}</h2>
         <div className="mx-auto mt-3 h-1 w-16 rounded-full" style={{ backgroundColor: '#D4AF37' }}></div>
