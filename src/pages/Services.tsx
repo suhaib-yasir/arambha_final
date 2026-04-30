@@ -69,27 +69,20 @@ export default function Services() {
 
       {/* ── Hero Section ── redesigned */}
       {/* ── Hero Section ── */}
-      <section className="relative bg-white overflow-hidden flex items-center min-h-[480px] sm:min-h-[560px] lg:min-h-[700px]" aria-label="Our Services">
-        {/* Background Image: visible on all screens, only shown behind content */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          <img
-            src={hero1}
-            alt="E-learning services background"
-            className="w-full h-full object-contain object-left-top sm:object-center lg:object-[20%_center]"
-          />
-        </div>
-
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 lg:py-24">
+      <section className="relative bg-white overflow-hidden flex flex-col lg:flex-row lg:items-center min-h-[500px] sm:min-h-[560px] lg:min-h-[700px]" aria-label="Our Services">
+        
+        {/* Content Div: Now first in HTML to appear at top on mobile */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-12 sm:py-16 lg:py-24">
           <div className="flex flex-col lg:flex-row items-center">
             {/* Spacer for desktop — lets illustration breathe */}
             <div className="hidden lg:block lg:w-[55%]" />
 
-            {/* Text content — glassmorphism card on mobile for legibility over the illustration */}
+            {/* Text content — glassmorphism card on mobile for legibility */}
             <motion.div
               className="w-full lg:w-[45%] text-center lg:text-left bg-white/80 sm:bg-white/70 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none p-6 sm:p-8 lg:p-0 rounded-2xl"
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
             >
-              <h1 className="font-serif font-extrabold text-[clamp(2rem,5vw,3.6rem)] mb-4 sm:mb-6 leading-[1.05] italic">
+              <h1 className="font-serif font-extrabold text-5xl sm:text-6xl lg:text-[clamp(2rem,5vw,3.6rem)] mb-6 sm:mb-6 leading-[1.05] italic">
                 <span className="text-[#1B2B48]">Our</span> <span className="text-[#D4AF37]">Services</span>
               </h1>
               <p className="text-[#3A5785] text-base sm:text-[1.1rem] mb-6 sm:mb-8 max-w-[620px] mx-auto lg:mx-0 font-sans leading-[1.6]">
@@ -113,6 +106,16 @@ export default function Services() {
             </motion.div>
           </div>
         </div>
+
+        {/* Background Image: Hidden on mobile/tablet, absolute background on desktop */}
+        <div className="hidden lg:block lg:absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <img
+            src={hero1}
+            alt="E-learning services background"
+            className="w-full h-full object-contain lg:object-[20%_center]"
+          />
+        </div>
+
       </section>
 
       {/* ── Why Arambha ── */}
