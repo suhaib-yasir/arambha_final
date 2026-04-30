@@ -179,7 +179,101 @@ const MORE_JOBS: Job[] = [
   }
 ];
 
-// --- Helper Components ---
+// --- Custom Dropdown Component ---
+const CustomDropdown = ({ 
+  label, 
+  options, 
+  value, 
+  onChange, 
+  icon: Icon 
+}: { 
+  label: string, 
+  options: string[], 
+  value: string, 
+  onChange: (val: string) => void,
+  icon: any
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="flex-1 lg:w-[180px] relative font-sans" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full h-full flex items-center justify-between px-4 py-4 group transition-all duration-300 hover:bg-gray-50/50"
+      >
+        <div className="flex items-center">
+          <Icon className="w-4 h-4 mr-2.5 transition-transform group-hover:scale-110" style={{ color: COLORS.gold }} />
+          <span className="text-xs font-bold text-gray-700 truncate max-w-[100px]">
+            {value === label ? label : value}
+          </span>
+        </div>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+          className="ml-2"
+        >
+          <ChevronRight className="w-3.5 h-3.5 text-gray-400 rotate-90" />
+        </motion.div>
+      </button>
+
+      {/* Animated Dropdown Menu */}
+      <motion.div
+        initial={false}
+        animate={isOpen ? { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1,
+          visibility: 'visible'
+        } : { 
+          opacity: 0, 
+          y: 10, 
+          scale: 0.95,
+          transitionEnd: { visibility: 'hidden' }
+        }}
+        transition={{ 
+          duration: 0.3, 
+          ease: [0.23, 1, 0.32, 1] 
+        }}
+        className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-50 py-1.5 backdrop-blur-sm bg-white/95"
+      >
+        <div className="max-h-[250px] overflow-y-auto custom-scrollbar">
+          {options.map((option) => (
+            <button
+              key={option}
+              onClick={() => {
+                onChange(option);
+                setIsOpen(false);
+              }}
+              className={`w-full text-left px-4 py-2.5 text-[11px] font-bold transition-all duration-200 flex items-center gap-2
+                ${value === option 
+                  ? 'bg-gray-50 text-[#1F2F4F]' 
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-[#1F2F4F]'}`}
+            >
+              {value === option && (
+                <motion.div 
+                  layoutId={`${label}-active`}
+                  className="w-1 h-3 rounded-full bg-[#D4AF37]" 
+                />
+              )}
+              {option}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 const WelcomeHero = () => (
   <div className="relative w-full bg-white font-sans" style={{ paddingTop: '4rem', paddingBottom: '3rem' }}>
@@ -238,11 +332,18 @@ const JobFilter = ({ onSearch }: { onSearch: (filters: { search: string; locatio
     });
   };
 
+  const LOCATIONS = ['All Locations', 'Bangalore', 'Remote', 'Mumbai', 'Delhi', 'Hyderabad', 'Pune'];
+  const DEPARTMENTS = ['Department', 'Marketing', 'Sales', 'HR', 'Strategy', 'Partnerships'];
+  const EXPERIENCES = ['Experience', 'Fresher', '0-2 Years', '1-3 Years', '2-4 Years', '2-5 Years', '3-5 Years', '4-6 Years', '5+ Years'];
+
   return (
-    <div className="relative mb-16 z-20 px-4 font-sans">
-      <div className={`bg-white p-2 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col lg:flex-row items-stretch transition-all duration-300`} style={isFocused ? { boxShadow: `0 0 0 4px ${COLORS.gold}33, 0 10px 40px rgba(0,0,0,0.08)`, transform: 'translateY(-2px)' } : {}}>
-        <div className="flex-grow flex items-center px-4 border-b lg:border-b-0 lg:border-r border-gray-100 min-h-[60px]">
-          <Search className="w-5 h-5 mr-3 transition-colors" style={{ color: isFocused ? COLORS.gold : '#9ca3af' }} />
+    <div className="relative mb-16 z-30 px-4 font-sans">
+      <div 
+        className={`bg-white p-2 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col lg:flex-row items-stretch transition-all duration-500 ease-out`} 
+        style={isFocused ? { boxShadow: `0 0 0 4px ${COLORS.gold}22, 0 20px 40px rgba(0,0,0,0.1)`, transform: 'translateY(-2px)' } : {}}
+      >
+        <div className="flex-grow flex items-center px-5 border-b lg:border-b-0 lg:border-r border-gray-100 min-h-[64px]">
+          <Search className={`w-5 h-5 mr-3.5 transition-all duration-300 ${isFocused ? 'scale-110' : ''}`} style={{ color: isFocused ? COLORS.gold : '#9ca3af' }} />
           <input
             type="text"
             placeholder="Search for your dream role..."
@@ -251,60 +352,52 @@ const JobFilter = ({ onSearch }: { onSearch: (filters: { search: string; locatio
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-gray-400 font-sans"
+            className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-gray-400 font-sans tracking-tight"
             style={{ color: COLORS.primary }}
           />
         </div>
+
         <div className="flex flex-col sm:flex-row flex-shrink-0">
-          <div className="flex-1 lg:w-[160px] flex items-center px-4 border-b sm:border-b-0 sm:border-r border-gray-100 min-h-[60px] relative">
-            <MapPin className="w-4 h-4 mr-2" style={{ color: COLORS.gold }} />
-            <select value={location} onChange={(e) => setLocation(e.target.value)} className="w-full bg-transparent text-xs font-bold text-gray-700 outline-none appearance-none cursor-pointer pr-6 font-sans">
-              <option>All Locations</option>
-              <option>Bangalore</option>
-              <option>Remote</option>
-              <option>Mumbai</option>
-              <option>Delhi</option>
-              <option>Hyderabad</option>
-              <option>Pune</option>
-            </select>
-            <div className="absolute right-4 pointer-events-none">
-              <div className="w-3 h-3 border-r-2 border-b-2 border-gray-400 rotate-45 mb-1"></div>
-            </div>
+          <div className="border-b sm:border-b-0 sm:border-r border-gray-100 flex items-center">
+            <CustomDropdown 
+              label="All Locations" 
+              options={LOCATIONS} 
+              value={location} 
+              onChange={setLocation} 
+              icon={MapPin} 
+            />
           </div>
-          <div className="flex-1 lg:w-[160px] flex items-center px-4 border-b sm:border-b-0 sm:border-r border-gray-100 min-h-[60px] relative">
-            <Briefcase className="w-4 h-4 mr-2" style={{ color: COLORS.gold }} />
-            <select value={department} onChange={(e) => setDepartment(e.target.value)} className="w-full bg-transparent text-xs font-bold text-gray-700 outline-none appearance-none cursor-pointer pr-6 font-sans">
-              <option>Department</option>
-              <option>Marketing</option>
-              <option>Sales</option>
-              <option>HR</option>
-              <option>Strategy</option>
-              <option>Partnerships</option>
-            </select>
-            <div className="absolute right-4 pointer-events-none">
-              <div className="w-3 h-3 border-r-2 border-b-2 border-gray-400 rotate-45 mb-1"></div>
-            </div>
+          
+          <div className="border-b sm:border-b-0 sm:border-r border-gray-100 flex items-center">
+            <CustomDropdown 
+              label="Department" 
+              options={DEPARTMENTS} 
+              value={department} 
+              onChange={setDepartment} 
+              icon={Briefcase} 
+            />
           </div>
-          <div className="flex-1 lg:w-[160px] flex items-center px-4 border-b sm:border-b-0 sm:border-r border-gray-100 min-h-[60px] relative">
-            <GraduationCap className="w-4 h-4 mr-2" style={{ color: COLORS.gold }} />
-            <select value={experience} onChange={(e) => setExperience(e.target.value)} className="w-full bg-transparent text-xs font-bold text-gray-700 outline-none appearance-none cursor-pointer pr-6 font-sans">
-              <option>Experience</option>
-              <option>Fresher</option>
-              <option>0-2 Years</option>
-              <option>1-3 Years</option>
-              <option>2-4 Years</option>
-              <option>2-5 Years</option>
-              <option>3-5 Years</option>
-              <option>4-6 Years</option>
-              <option>5+ Years</option>
-            </select>
-            <div className="absolute right-4 pointer-events-none">
-              <div className="w-3 h-3 border-r-2 border-b-2 border-gray-400 rotate-45 mb-1"></div>
-            </div>
+
+          <div className="sm:border-r border-gray-100 flex items-center">
+            <CustomDropdown 
+              label="Experience" 
+              options={EXPERIENCES} 
+              value={experience} 
+              onChange={setExperience} 
+              icon={GraduationCap} 
+            />
           </div>
         </div>
-        <button onClick={handleSearch} className="text-white lg:px-10 px-4 min-h-[60px] lg:min-h-0 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 m-1 font-serif italic" style={{ backgroundColor: COLORS.primary }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.gold} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}>
-          Search
+
+        <button 
+          onClick={handleSearch} 
+          className="relative overflow-hidden text-white lg:px-12 px-6 min-h-[60px] lg:min-h-0 rounded-xl font-bold text-sm uppercase tracking-[0.15em] transition-all duration-300 active:scale-95 m-1 font-serif italic group" 
+          style={{ backgroundColor: COLORS.primary }}
+        >
+          <span className="relative z-10">Search</span>
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          />
         </button>
       </div>
     </div>

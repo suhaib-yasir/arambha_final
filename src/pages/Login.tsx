@@ -132,19 +132,19 @@ export default function Login() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative z-10 p-12 -mt-40"
+            className="relative z-10 p-12 -mt-24"
           >
             <div className="flex flex-col items-center">
               <img
                 src={logo}
                 alt="Arambha Logo"
-                className="w-full max-w-[480px] h-auto drop-shadow-2xl"
+                className="w-full max-w-[380px] h-auto drop-shadow-2xl"
               />
-              <div className="mt-8 text-center">
-                <h2 className="font-serif text-3xl text-primary font-bold italic mb-2">Arambha</h2>
-                <p className="text-accent-gold font-bold tracking-[0.2em] uppercase text-sm">Skill Solutions</p>
-                <div className="mt-6 h-1 w-20 bg-accent-gold mx-auto rounded-full"></div>
-                <p className="mt-6 text-on-surface-variant font-medium font-sans max-w-xs mx-auto">
+              <div className="mt-6 text-center">
+                <h2 className="font-serif text-2xl text-primary font-bold italic mb-1">Arambha</h2>
+                <p className="text-accent-gold font-bold tracking-[0.2em] uppercase text-[10px]">Skill Solutions</p>
+                <div className="mt-4 h-1 w-16 bg-accent-gold mx-auto rounded-full"></div>
+                <p className="mt-4 text-on-surface-variant text-sm font-medium font-sans max-w-xs mx-auto leading-relaxed">
                   Bridging the gap between student life and career success with academic excellence.
                 </p>
               </div>

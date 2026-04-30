@@ -76,18 +76,19 @@ export default function Home() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.15,
+        delayChildren: 0.1
       }
     }
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
@@ -111,20 +112,23 @@ export default function Home() {
       `}} />
       {/* Hero Section */}
       <section
-        className="relative pt-16 sm:pt-24 pb-20 sm:pb-32 overflow-hidden bg-cover bg-center bg-no-repeat font-sans"
+        className="relative pt-28 sm:pt-32 pb-20 sm:pb-40 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center lg:text-left grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+        {/* Subtle overlay for mobile readability */}
+        <div className="absolute inset-0 bg-white/40 md:hidden pointer-events-none" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="z-10"
+            className="w-full"
           >
-            <motion.h1 variants={itemVariants} className="font-serif text-3xl sm:text-5xl md:text-7xl text-primary mb-6 leading-tight font-extrabold italic">
+            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-5xl md:text-7xl text-primary mb-6 leading-[1.1] font-extrabold italic tracking-tight">
               From Learning to <span className="text-accent-gold">Earning</span> – Start Your Journey Today.
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-on-surface-variant mb-8 sm:mb-10 max-w-xl mx-auto lg:mx-0 font-sans leading-relaxed">
+            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-[#2A3F65] mb-10 max-w-xl mx-auto lg:mx-0 font-sans leading-relaxed font-medium">
               Speak confidently, gain skills, and step into your career. We bridge the gap between where you are and where you want to be with academic excellence.
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start mb-8 sm:mb-12">
@@ -137,25 +141,31 @@ export default function Home() {
                 WhatsApp Now
               </button>
             </motion.div>
-            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-left ">
-              <div className="flex items-start gap-3 relative left-36 ">
-                <Globe className="text-accent-gold" size={24} />
-                <div className= " ">
-                  <p className="font-bold text-primary font-serif italic">Daily Practice</p>
+            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left lg:text-left mt-4">
+              <div className="flex items-start gap-4">
+                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
+                  <Globe className="text-accent-gold" size={24} />
+                </div>
+                <div>
+                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Daily Practice</p>
                   <p className="text-sm text-on-surface-variant font-sans">Native language tailored</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 relative left-34">
-                <Briefcase className="text-accent-gold" size={24} />
+              <div className="flex items-start gap-4">
+                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
+                  <Briefcase className="text-accent-gold" size={24} />
+                </div>
                 <div>
-                  <p className="font-bold text-primary font-serif italic">Live Projects</p>
+                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Live Projects</p>
                   <p className="text-sm text-on-surface-variant font-sans">Real career opportunities</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 relative left-28">
-                <CheckCircle2 className="text-accent-gold" size={24} />
+              <div className="flex items-start gap-4">
+                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
+                  <CheckCircle2 className="text-accent-gold" size={24} />
+                </div>
                 <div>
-                  <p className="font-bold text-primary font-serif italic">Outcome-Driven</p>
+                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Outcome-Driven</p>
                   <p className="text-sm text-on-surface-variant font-sans">Measurable results</p>
                 </div>
               </div>
@@ -205,10 +215,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col lg:flex-row lg:items-center gap-6 sm:gap-8 lg:gap-12">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, x: -40, filter: "blur(10px)" }}
+              whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="lg:w-1/3"
             >
               <h2 className="font-serif text-2xl sm:text-4xl text-primary mb-3 sm:mb-4 font-bold leading-tight italic">Comprehensive Skill Eco-system</h2>
@@ -259,12 +269,18 @@ export default function Home() {
       <section className="py-8 sm:py-12 bg-white border-t border-slate-100 overflow-hidden font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-6 items-center">
-            <div className="text-left lg:col-span-4 pr-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-left lg:col-span-4 pr-4"
+            >
               <p className="text-[10px] sm:text-xs text-on-surface-variant uppercase mb-3 sm:mb-4 tracking-widest font-bold font-sans">Trusted by Alumni At</p>
               <h2 className="font-serif text-2xl sm:text-4xl text-primary leading-tight font-bold italic">
                 Teams speaking at the world's most ambitious <span className="text-accent-gold">companies</span>.
               </h2>
-            </div>
+            </motion.div>
             <div className="relative w-full overflow-hidden py-6 lg:col-span-8">
               <div
                 className="flex w-max items-center py-4 animate-scroll hover:[animation-play-state:paused]"
@@ -289,8 +305,8 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <div className="absolute top-0 left-0 w-40 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute top-0 right-0 w-40 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-40 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+              <div className="absolute top-0 right-0 w-40 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
             </div>
           </div>
         </div>
@@ -302,19 +318,26 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+              whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="order-2 lg:order-1"
             >
-              <div className="relative overflow-hidden">
+              <div className="relative overflow-hidden rounded-3xl shadow-xl">
                 <img
-                  className="w-full aspect-video object-cover"
+                  className="w-full aspect-video object-cover hover:scale-105 transition-transform duration-700"
                   src={engImg}
                 />
               </div>
             </motion.div>
-            <div className="order-1 lg:order-2">
+            <motion.div
+              initial={{ opacity: 0, x: 40, filter: "blur(10px)" }}
+              whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              className="order-1 lg:order-2"
+            >
               <h2 className="font-serif text-2xl sm:text-4xl text-primary mb-4 sm:mb-6 font-bold leading-tight italic">Speak English Confidently Using Your Regional Language</h2>
               <p className="text-base sm:text-xl mb-6 sm:mb-8 leading-relaxed text-on-surface-variant font-sans">
                 Build strong communication skills using your native language as a bridge. No theory overload — only real-world speaking.
@@ -334,7 +357,7 @@ export default function Home() {
               <button className="brand-gradient-navy text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold font-serif italic text-sm sm:text-base shadow-xl hover:brightness-110 transition-all uppercase tracking-wide">
                 Start Speaking Today
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -345,10 +368,11 @@ export default function Home() {
       <section className="py-8 sm:py-16 bg-white font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-0 sm:mb-0 gap-3 sm:gap-4"
+            initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 sm:mb-16 gap-6 sm:gap-8"
           >
             <div className="max-w-xl">
               <h2 className="font-serif text-2xl sm:text-4xl text-primary mb-3 sm:mb-4 font-bold italic">Our Signature Programs</h2>
@@ -363,7 +387,7 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 sm:gap-12"
           >
             <ProgramCard
               tag="Popular"
@@ -402,10 +426,10 @@ export default function Home() {
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-surface rounded-full blur-[100px]"></div>
             <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 items-center relative z-10">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
+                initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
                 <h2 className="font-serif text-2xl sm:text-4xl md:text-5xl text-primary mb-6 sm:mb-8 font-bold leading-tight italic">Built for <span className="text-accent-gold">outcomes</span>. Not curriculum theatre.</h2>
                 <p className="text-base sm:text-xl text-on-surface-variant mb-8 sm:mb-12 font-sans leading-relaxed">
@@ -449,9 +473,9 @@ function LogoItem({ alt, src }: { alt: string, src: string }) {
 }
 
 function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg-slate-100 text-primary border-slate-200", onClick }: { tag: string, category?: string, title: string, desc: string, duration?: string, img: string, tagColor?: string, onClick?: () => void }) {
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 40, filter: "blur(10px)", scale: 0.95 },
+    visible: { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
   return (
@@ -459,18 +483,18 @@ function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg
       variants={itemVariants}
       whileHover={{ y: -8 }}
       onClick={onClick}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 cursor-pointer max-w-[350px] mx-auto w-full"
     >
-      <div className="h-64 overflow-hidden relative">
+      <div className="h-52 overflow-hidden relative">
         <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src={img} alt={title} />
       </div>
-      <div className="p-8">
-        <h3 className="text-xl text-primary mb-2 font-serif font-bold italic group-hover:text-accent-gold transition-colors">{title}</h3>
-        <p className="text-on-surface-variant mb-6 font-sans text-sm leading-relaxed line-clamp-3">{desc}</p>
-        <div className="flex items-center justify-between pt-6 border-t border-slate-100 text-sm">
+      <div className="p-6">
+        <h3 className="text-lg text-primary mb-2 font-serif font-bold italic group-hover:text-accent-gold transition-colors">{title}</h3>
+        <p className="text-on-surface-variant mb-5 font-sans text-xs sm:text-sm leading-relaxed line-clamp-2">{desc}</p>
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs">
           <span className="font-bold text-primary font-serif italic uppercase tracking-wider">{duration}</span>
-          <div className="bg-surface p-1 rounded-full group-hover:bg-accent-gold group-hover:text-white transition-colors">
-            <ChevronRight size={20} />
+          <div className="bg-surface p-1.5 rounded-full group-hover:bg-accent-gold group-hover:text-white transition-colors">
+            <ChevronRight size={18} />
           </div>
         </div>
       </div>
@@ -479,9 +503,9 @@ function ProgramCard({ tag, category, title, desc, duration, img, tagColor = "bg
 }
 
 function ValueCard({ icon: Icon, title, text }: { icon: any, title: string, text: string }) {
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0 }
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)", scale: 0.95 },
+    visible: { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
   return (
@@ -533,9 +557,9 @@ function RoadmapSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+          animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-14 sm:mb-20"
         >
           <span className="text-[10px] text-accent-gold uppercase tracking-widest font-bold mb-3 block font-sans">Learning Journey</span>
@@ -586,9 +610,9 @@ function RoadmapSection() {
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 32 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.2 + i * 0.15, ease: "easeOut" }}
+                initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
+                animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                transition={{ duration: 0.8, delay: 0.2 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 flex flex-col items-center text-center group cursor-default"
               >
                 {/* Floating Icon Box */}

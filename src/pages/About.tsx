@@ -575,9 +575,9 @@ const Values = () => {
     <section className="py-32 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-24 relative z-20">
-          <span className="text-secondary font-bold text-xs tracking-[0.3em] uppercase mb-4 block">Corporate Values</span>
-          <h2 className="text-headline-lg font-serif text-primary mb-4 italic">What Drives Us</h2>
-          <div className="h-1.5 w-16 bg-accent-gold mx-auto rounded-full"></div>
+          <span className="text-secondary font-bold text-sm md:text-base tracking-[0.3em] uppercase mb-4 block">Corporate Values</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-primary mb-6 italic font-extrabold">What Drives Us</h2>
+          <div className="h-2 w-24 bg-accent-gold mx-auto rounded-full"></div>
         </div>
 
         {/* Desktop Orbit Layout */}
