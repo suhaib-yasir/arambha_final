@@ -8,3 +8,4 @@ firebase-admin
 fpdf2
 pydantic
 httpx
+python-dotenv
