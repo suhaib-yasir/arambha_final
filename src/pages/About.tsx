@@ -46,7 +46,7 @@ const Hero = () => (
     />
 
     <div className="relative z-10 w-full max-w-7xl mx-auto">
-      <div className="flex flex-col items-start w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl pr-0 md:pr-8 pl-4 sm:pl-8 lg:pl-10">
+      <div className="flex flex-col items-start w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl px-4 md:px-0 md:pl-10 lg:pl-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -59,7 +59,7 @@ const Hero = () => (
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-serif mb-6 md:mb-8 leading-[1.05] md:leading-tight tracking-tighter font-extrabold text-primary"
+          className="text-[34px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif mb-6 md:mb-8 leading-[1.1] md:leading-tight tracking-tighter font-extrabold text-primary"
         >
           <span className="whitespace-nowrap">Empowering <span className="text-secondary font-serif italic">Talent.</span></span><br />
           <span className="whitespace-nowrap">Igniting <span className="text-secondary font-serif italic">Innovation.</span></span><br />
@@ -70,7 +70,7 @@ const Hero = () => (
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className=" text-[13px] sm:text-[15px] md:text-[17px] text-[#475569] mb-8 md:mb-10 w-full max-w-[90%] md:max-w-md lg:max-w-lg xl:max-w-xl font-sans lg:ml-10 leading-relaxed drop-shadow-sm"
+          className="text-[13px] sm:text-[15px] md:text-[17px] text-[#475569] mb-8 md:mb-10 w-full max-w-full md:max-w-md lg:max-w-lg xl:max-w-xl font-sans md:ml-10 leading-relaxed drop-shadow-sm"
         >
           A Decade of Disruption, Growth & Transformational Impact. We are not just an institution; we are the bridge between potential and excellence.
         </motion.p>
@@ -80,7 +80,7 @@ const Hero = () => (
 );
 
 const Stats = () => (
-  <section className="py-20 bg-white relative z-20 border-b border-outline-variant/30">
+  <section className="pt-4 pb-16 md:py-20 bg-white relative z-20 border-b border-outline-variant/30">
     <div className="max-w-7xl mx-auto px-6 overflow-x-auto">
 
       {/* Responsive Grid for mobile, Flex for desktop */}

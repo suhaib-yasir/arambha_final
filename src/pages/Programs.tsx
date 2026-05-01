@@ -205,13 +205,13 @@ export default function ProgramsScreen() {
         }
       `}} />
       {/* Hero Section */}
-      <section className="relative pt-10 sm:pt-14 pb-0 sm:pb-4 overflow-hidden bg-white">
+      <section className="relative pt-0 sm:pt-4 pb-0 sm:pb-4 overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-8 lg:gap-0">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-12 sm:py-16 lg:py-12 pl-4 sm:pl-6 lg:pl-8"
+              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-8 sm:py-12 lg:py-8 pl-4 sm:pl-6 lg:pl-8"
             >
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.15] mb-5 sm:mb-6 italic">
                 Choose the Right Program to{" "}

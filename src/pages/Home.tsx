@@ -120,7 +120,7 @@ export default function Home() {
       `}} />
       {/* Hero Section */}
       <section
-        className="relative pt-12 sm:pt-16 pb-12 sm:pb-20 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
+        className="relative pt-4 sm:pt-6 pb-4 sm:pb-8 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         {/* Subtle overlay for mobile readability */}
@@ -133,10 +133,10 @@ export default function Home() {
             animate="visible"
             className="w-full"
           >
-            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-5xl md:text-7xl text-primary mb-6 leading-[1.1] font-extrabold italic tracking-tight lg:max-w-xl">
-              From Learning to <span className="text-accent-gold">Earning</span> – Start Your Journey Today.
+            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-5xl md:text-7xl text-primary mb-6 leading-[1.1] font-extrabold italic tracking-tight lg:max-w-3xl lg:mx-0">
+              <span className="md:whitespace-nowrap">From Learning to <span className="text-accent-gold">Earning</span></span><br className="hidden md:block" /> Start Your Journey Today.
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-[#475569] mb-10 max-w-[85%] sm:max-w-md lg:max-w-md mx-auto lg:mx-0 font-sans leading-relaxed font-medium">
+            <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl text-[#475569] mb-10 max-w-[85%] sm:max-w-md lg:max-w-md mx-auto lg:mx-0 font-sans leading-relaxed font-medium text-justify">
               Speak confidently, gain skills, and step into your career. We bridge the gap between where you are and where you want to be with academic excellence.
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start mb-8 sm:mb-12">
@@ -163,11 +163,11 @@ export default function Home() {
           ></motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 max-w-7xl mx-auto px-6 flex flex-nowrap items-start justify-center gap-x-12 sm:gap-x-20 gap-y-6 mt-16 sm:mt-24 overflow-x-auto lg:overflow-x-visible pb-4 no-scrollbar"
+          className="relative z-10 max-w-7xl mx-auto px-6 flex flex-nowrap items-start justify-center gap-x-12 sm:gap-x-20 gap-y-6 mt-20 sm:mt-32 overflow-x-auto lg:overflow-x-visible pb-4 no-scrollbar"
         >
           <motion.div variants={itemVariants} className="flex items-start gap-4 shrink-0">
             <div className="bg-accent-gold/10 p-2 sm:p-3 rounded-xl shrink-0">
@@ -527,18 +527,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Floating WhatsApp Button */}
-      <motion.a
-        href="https://wa.me/919108032103"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ y: -5 }}
-      >
-        <MessageCircle size={32} />
-      </motion.a>
     </>
   );
 }
