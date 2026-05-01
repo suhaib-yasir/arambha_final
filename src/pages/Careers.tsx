@@ -581,11 +581,11 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
 
   const handleFileChange = (file: File | null) => {
     if (file && (file.type === 'application/pdf' || file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-      if (file.size <= 5 * 1024 * 1024) {
+      if (file.size <= 1 * 1024 * 1024) {
         setFormData(prev => ({ ...prev, resume: file }));
         setResumeFileName(file.name);
       } else {
-        alert('File size must be less than 5MB');
+        alert('File size must be less than 1MB');
       }
     } else {
       alert('Only PDF, DOC, and DOCX files are allowed');
@@ -622,6 +622,25 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Invalid email format. Please enter a valid email (e.g., @gmail.com, .edu.in).");
+      return;
+    }
+
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    if (phoneDigits.length !== 10) {
+      alert("Please enter exactly 10 digits for Phone Number.");
+      return;
+    }
+
+    const whatsappDigits = formData.whatsapp.replace(/\D/g, '');
+    if (whatsappDigits.length !== 10) {
+      alert("Please enter exactly 10 digits for WhatsApp Number.");
+      return;
+    }
+
     const finalData = { ...formData };
     if (roleApplied === 'custom') {
       finalData.roleApplied = formData.customRole || '';
@@ -712,6 +731,8 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
                 value={formData.email}
                 onChange={handleInputChange}
                 required
+                pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+                title="Please enter a valid email address (e.g., user@gmail.com, user@edu.in)"
                 className="px-4 py-2.5 border rounded text-sm font-sans"
                 style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
                 placeholder="your@email.com"
@@ -727,9 +748,15 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
                 value={formData.phone}
                 onChange={handleInputChange}
                 required
+                pattern="[0-9]{10}"
+                maxLength={10}
+                title="Please enter exactly 10 digits for Phone Number."
                 className="px-4 py-2.5 border rounded text-sm font-sans"
                 style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                placeholder="+91 XXXXX XXXXX"
+                placeholder="10 digit phone number"
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10);
+                }}
               />
             </div>
             <div className="flex flex-col">
@@ -742,9 +769,15 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
                 value={formData.whatsapp}
                 onChange={handleInputChange}
                 required
+                pattern="[0-9]{10}"
+                maxLength={10}
+                title="Please enter exactly 10 digits for WhatsApp Number."
                 className="px-4 py-2.5 border rounded text-sm font-sans"
                 style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
-                placeholder="+91 XXXXX XXXXX"
+                placeholder="10 digit whatsapp number"
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10);
+                }}
               />
             </div>
             <div className="flex flex-col md:col-span-2">
@@ -816,7 +849,7 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
                 name="course"
                 value={formData.course}
                 onChange={handleInputChange}
-                className="px-4 py-2.5 border rounded text-sm font-sans"
+                className="px-4 py-2.5 border rounded text-sm font-sans transition-all duration-300 hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 cursor-pointer"
                 style={{ borderColor: '#e5e7eb', color: COLORS.primary }}
               >
                 <option value="">Select a course</option>
@@ -1028,7 +1061,7 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
                   or click to browse
                 </p>
                 <p className="text-xs text-gray-400 font-sans mt-1">
-                  PDF, DOC, DOCX (max 5MB)
+                  PDF, DOC, DOCX (max 1MB)
                 </p>
               </div>
             </label>
