@@ -103,8 +103,6 @@ export default function Home() {
     <>
       <style dangerouslySetInnerHTML={{
         __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
-
         :root {
           --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
           --font-serif: "Lora", serif;
@@ -336,6 +334,7 @@ export default function Home() {
                 <img
                   className="w-full aspect-video object-cover hover:scale-105 transition-transform duration-700"
                   src={engImg}
+                  loading="lazy"
                 />
               </div>
             </motion.div>
@@ -402,16 +401,16 @@ export default function Home() {
               {/* Logos Grid */}
               <div className="lg:w-2/3 flex flex-wrap items-center justify-center lg:justify-between gap-8 sm:gap-12 md:gap-16">
                 <div className="flex flex-col items-center gap-2">
-                  <img src={vtuLogo} alt="VTU" className="h-20 sm:h-24 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={vtuLogo} alt="VTU" loading="lazy" className="h-20 sm:h-24 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={startupIndiaLogo} alt="Startup India" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={startupIndiaLogo} alt="Startup India" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={isoLogo} alt="ISO Certified" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={isoLogo} alt="ISO Certified" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={msmeLogo} alt="MSME" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={msmeLogo} alt="MSME" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
               </div>
             </div>
