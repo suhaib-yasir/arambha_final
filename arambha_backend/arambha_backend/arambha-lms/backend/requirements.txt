@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+firebase-admin
+fpdf2
+pydantic
+httpx
+python-dotenv

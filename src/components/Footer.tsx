@@ -1,16 +1,17 @@
 import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
-import logo from "../assets/ARAMBHA.svg";
+import logo from "../assets/ARAMBHA(1).svg";
+
 import arambhaText from "../assets/arambha-text.svg";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-surface text-primary border-t border-slate-200 mt-20 relative">
+    <footer className="bg-surface text-primary border-t border-slate-200 relative">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 max-w-7xl mx-auto px-8 py-16 relative z-10">
         <div className="col-span-1">
           <div className="flex items-start gap-6 mb-8">
             <img src={logo} style={{ width: "200px", height: "200px" }} alt="Arambha Logo" />
-           
+            
           </div>
           <p className="text-sm text-on-surface-variant mb-6 leading-relaxed font-sans">
             Elevating professional mastery through visionary learning. Bridging the gap between student life and career success with academic excellence.
@@ -33,16 +34,15 @@ export default function Footer() {
         <FooterSection title="Quick Links" links={["About Arambha", "Skill Programs", "Career Launchpad"]} />
         <FooterSection title="Legal & Support" links={["Contact Support", "Partner Network", "Privacy Policy", "Terms of Service"]} isLegalSupport={true} />
         <div>
-          <h4 className="font-bold text-primary mb-6 font-serif text-base uppercase tracking-wider">Contact Us</h4>
+          <h4 className="font-bold text-primary mb-6 font-serif italic text-base uppercase tracking-wider">Contact Us</h4>
           <div className="space-y-4 text-sm text-on-surface-variant font-sans">
-            <ContactInfo icon={MapPin} text="123 Skill Street, Tech Park, India" />
             <ContactInfo icon={Phone} text="+91 91080 32103" />
             <ContactInfo icon={Mail} text="arambhaskilldesignsolutions@gmail.com" />
           </div>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-8 py-8 border-t border-slate-200 text-center text-[10px] text-slate-400 font-sans tracking-[0.2em] uppercase relative z-10">
-        © 2024 Arambha Skill Solutions. All rights reserved. Academic Excellence & Professional Growth.
+        © {new Date().getFullYear()} Arambha Skill Solutions. All rights reserved. Academic Excellence & Professional Growth.
         <div className="mt-2 opacity-30 select-none">ARAMBHA ACADEMIC EXCELLENCE SYSTEM V1.0</div>
       </div>
     </footer>
@@ -52,7 +52,7 @@ export default function Footer() {
 function FooterSection({ title, links, isLegalSupport = false }: { title: string, links: string[], isLegalSupport?: boolean }) {
   return (
     <div>
-      <h4 className="font-bold text-primary mb-6 font-serif text-base uppercase tracking-wider">{title}</h4>
+      <h4 className="font-bold text-primary mb-6 font-serif italic text-base uppercase tracking-wider">{title}</h4>
       <ul className="space-y-4">
         {links.map((link, i) => (
           <li key={i}>
