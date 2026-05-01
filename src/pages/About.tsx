@@ -38,7 +38,7 @@ import hereBg from "../assets/About page-hero.svg";
 // --- Helper Components ---
 
 const Hero = () => (
-  <section className="relative min-h-0 md:min-h-[800px] flex items-start justify-start pt-16 pb-4 md:pt-8 md:pb-0 overflow-hidden px-4 md:px-6 bg-white">
+  <section className="relative min-h-0 md:min-h-[650px] flex items-start justify-start pt-16 pb-4 md:pt-8 md:pb-0 overflow-hidden px-4 md:px-6 bg-white">
     {/* Desktop Background Image */}
     <div 
       className="absolute inset-0 hidden md:block bg-no-repeat bg-cover bg-[center_right] lg:bg-center z-0"
@@ -46,7 +46,7 @@ const Hero = () => (
     />
 
     <div className="relative z-10 w-full max-w-7xl mx-auto">
-      <div className="flex flex-col items-start w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl pr-0 md:pr-8">
+      <div className="flex flex-col items-start w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl pr-0 md:pr-8 pl-4 sm:pl-8 lg:pl-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -61,16 +61,16 @@ const Hero = () => (
           transition={{ delay: 0.2 }}
           className="text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-serif mb-6 md:mb-8 leading-[1.05] md:leading-tight tracking-tighter font-extrabold text-primary"
         >
-          Empowering <span className="text-secondary font-serif italic">Talent.</span><br />
-          Igniting <span className="text-secondary font-serif italic">Innovation.</span><br />
-          Shaping Global <span className="text-secondary font-serif italic">Futures.</span>
+          <span className="whitespace-nowrap">Empowering <span className="text-secondary font-serif italic">Talent.</span></span><br />
+          <span className="whitespace-nowrap">Igniting <span className="text-secondary font-serif italic">Innovation.</span></span><br />
+          <span className="whitespace-nowrap">Shaping Global <span className="text-secondary font-serif italic">Futures.</span></span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className=" text-[13px] sm:text-[15px] md:text-[17px] text-[#475569] mb-8 md:mb-10 w-full max-w-[90%] md:max-w-md lg:max-w-lg xl:max-w-xl font-sans ml-0 lg:ml-10 leading-relaxed drop-shadow-sm"
+          className=" text-[13px] sm:text-[15px] md:text-[17px] text-[#475569] mb-8 md:mb-10 w-full max-w-[90%] md:max-w-md lg:max-w-lg xl:max-w-xl font-sans lg:ml-10 leading-relaxed drop-shadow-sm"
         >
           A Decade of Disruption, Growth & Transformational Impact. We are not just an institution; we are the bridge between potential and excellence.
         </motion.p>

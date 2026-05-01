@@ -103,6 +103,8 @@ export default function Home() {
     <>
       <style dangerouslySetInnerHTML={{
         __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+
         :root {
           --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
           --font-serif: "Lora", serif;
@@ -118,13 +120,13 @@ export default function Home() {
       `}} />
       {/* Hero Section */}
       <section
-        className="relative pt-28 sm:pt-32 pb-12 sm:pb-20 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
+        className="relative pt-12 sm:pt-16 pb-12 sm:pb-20 overflow-hidden bg-cover bg-[center_right_-100px] md:bg-center bg-no-repeat font-sans"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         {/* Subtle overlay for mobile readability */}
         <div className="absolute inset-0 bg-white/40 md:hidden pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 lg:pl-32 lg:pr-20 text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 lg:pl-12 lg:pr-20 text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -142,39 +144,15 @@ export default function Home() {
                 Book a Class
                 <ArrowRight size={18} />
               </button>
-              <button className="bg-white/90 backdrop-blur-sm border border-outline-variant text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-white transition-all flex items-center justify-center gap-2 font-serif italic">
+              <a
+                href="https://wa.me/919108032103"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white/90 backdrop-blur-sm border border-outline-variant text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-white transition-all flex items-center justify-center gap-2 font-serif italic"
+              >
                 <MessageCircle size={18} className="text-accent-gold" />
                 WhatsApp Now
-              </button>
-            </motion.div>
-            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left lg:text-left mt-4">
-              <div className="flex items-start gap-4">
-                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
-                  <Globe className="text-accent-gold" size={24} />
-                </div>
-                <div>
-                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Daily Practice</p>
-                  <p className="text-sm text-on-surface-variant font-sans">Native language tailored</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
-                  <Briefcase className="text-accent-gold" size={24} />
-                </div>
-                <div>
-                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Live Projects</p>
-                  <p className="text-sm text-on-surface-variant font-sans">Real career opportunities</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="bg-accent-gold/10 p-2 rounded-lg shrink-0">
-                  <CheckCircle2 className="text-accent-gold" size={24} />
-                </div>
-                <div>
-                  <p className="font-bold text-primary font-serif italic text-base sm:text-lg">Outcome-Driven</p>
-                  <p className="text-sm text-on-surface-variant font-sans">Measurable results</p>
-                </div>
-              </div>
+              </a>
             </motion.div>
           </motion.div>
           <motion.div
@@ -184,6 +162,41 @@ export default function Home() {
             className="hidden lg:block"
           ></motion.div>
         </div>
+
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative z-10 max-w-7xl mx-auto px-6 flex flex-nowrap items-start justify-center gap-x-12 sm:gap-x-20 gap-y-6 mt-16 sm:mt-24 overflow-x-auto lg:overflow-x-visible pb-4 no-scrollbar"
+        >
+          <motion.div variants={itemVariants} className="flex items-start gap-4 shrink-0">
+            <div className="bg-accent-gold/10 p-2 sm:p-3 rounded-xl shrink-0">
+              <Globe className="text-accent-gold" size={28} />
+            </div>
+            <div>
+              <p className="font-bold text-primary font-serif italic text-base sm:text-xl whitespace-nowrap">Daily Practice</p>
+              <p className="text-sm sm:text-base text-on-surface-variant font-sans whitespace-nowrap">Native language tailored</p>
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="flex items-start gap-4 shrink-0">
+            <div className="bg-accent-gold/10 p-2 sm:p-3 rounded-xl shrink-0">
+              <Briefcase className="text-accent-gold" size={28} />
+            </div>
+            <div>
+              <p className="font-bold text-primary font-serif italic text-base sm:text-xl whitespace-nowrap">Live Projects</p>
+              <p className="text-sm sm:text-base text-on-surface-variant font-sans whitespace-nowrap">Real career opportunities</p>
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="flex items-start gap-4 shrink-0">
+            <div className="bg-accent-gold/10 p-2 sm:p-3 rounded-xl shrink-0">
+              <CheckCircle2 className="text-accent-gold" size={28} />
+            </div>
+            <div>
+              <p className="font-bold text-primary font-serif italic text-base sm:text-xl whitespace-nowrap">Outcome-Driven</p>
+              <p className="text-sm sm:text-base text-on-surface-variant font-sans whitespace-nowrap">Measurable results</p>
+            </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Stats Section */}
@@ -334,7 +347,6 @@ export default function Home() {
                 <img
                   className="w-full aspect-video object-cover hover:scale-105 transition-transform duration-700"
                   src={engImg}
-                  loading="lazy"
                 />
               </div>
             </motion.div>
@@ -365,7 +377,7 @@ export default function Home() {
                 </div>
                 <p className="font-bold text-accent-gold text-sm sm:text-base">5000+ learners enrolled</p>
               </div>
-              <Link 
+              <Link
                 to="/programs#technical-programs"
                 className="brand-gradient-navy text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold font-serif italic text-sm sm:text-base shadow-xl hover:brightness-110 transition-all uppercase tracking-wide inline-block"
               >
@@ -386,7 +398,7 @@ export default function Home() {
           >
             {/* Subtle glow effect */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent-gold/5 rounded-full blur-3xl -mt-32 -mr-32 group-hover:bg-accent-gold/10 transition-colors duration-700"></div>
-            
+
             <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
               {/* Heading Side */}
               <div className="lg:w-1/3 text-center lg:text-left">
@@ -401,16 +413,16 @@ export default function Home() {
               {/* Logos Grid */}
               <div className="lg:w-2/3 flex flex-wrap items-center justify-center lg:justify-between gap-8 sm:gap-12 md:gap-16">
                 <div className="flex flex-col items-center gap-2">
-                  <img src={vtuLogo} alt="VTU" loading="lazy" className="h-20 sm:h-24 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={vtuLogo} alt="VTU" className="h-20 sm:h-24 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={startupIndiaLogo} alt="Startup India" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={startupIndiaLogo} alt="Startup India" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={isoLogo} alt="ISO Certified" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={isoLogo} alt="ISO Certified" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <img src={msmeLogo} alt="MSME" loading="lazy" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
+                  <img src={msmeLogo} alt="MSME" className="h-16 sm:h-20 object-contain drop-shadow-md hover:scale-110 transition-transform duration-500" />
                 </div>
               </div>
             </div>
@@ -514,6 +526,19 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/919108032103"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ y: -5 }}
+      >
+        <MessageCircle size={32} />
+      </motion.a>
     </>
   );
 }

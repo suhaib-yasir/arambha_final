@@ -211,7 +211,7 @@ export default function ProgramsScreen() {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-12 sm:py-16 lg:py-12"
+              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-12 sm:py-16 lg:py-12 pl-4 sm:pl-6 lg:pl-8"
             >
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.15] mb-5 sm:mb-6 italic">
                 Choose the Right Program to{" "}
