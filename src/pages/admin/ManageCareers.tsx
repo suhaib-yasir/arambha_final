@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getCareers, deleteCareer, Career } from '../../services/careerService';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/firebase';
+import { deleteCareer, Career } from '../../services/careerService';
 import { 
   Trash2, 
   Search, 
@@ -11,8 +13,10 @@ import {
   CheckCircle2,
   X,
   ExternalLink,
-  Plus
+  Plus,
+  ArrowLeft
 } from 'lucide-react';
+import CreateCareer from './CreateCareer';
 
 // Import career images for consistent branding
 import businessDevImg from "../../assets/jobs/business-development-associate.png";
@@ -43,21 +47,27 @@ export default function ManageCareers() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const fetchCareers = async () => {
-    try {
-      setLoading(true);
-      const data = await getCareers();
-      setCareers(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load careers');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
-    fetchCareers();
+    setLoading(true);
+    const q = query(collection(db, "careers"), orderBy("createdAt", "desc"));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Career[];
+      setCareers(data);
+      setLoading(false);
+      setError(null);
+    }, (err) => {
+      console.error("Careers listener error:", err);
+      setError("Failed to load careers. Please check your connection.");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -99,20 +109,56 @@ export default function ManageCareers() {
             className="w-full bg-white border border-slate-200 rounded-2xl pl-12 pr-6 py-4 focus:ring-4 focus:ring-accent-gold/10 focus:border-accent-gold outline-none transition-all shadow-sm"
           />
         </div>
-        <div className="flex items-center gap-6 bg-white px-8 py-4 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="text-center">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Postings</p>
-            <p className="text-2xl font-serif font-black text-primary">{careers.length}</p>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6 bg-white px-8 py-4 rounded-2xl border border-slate-200 shadow-sm h-full">
+            <div className="text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Postings</p>
+              <p className="text-2xl font-serif font-black text-primary">{careers.length}</p>
+            </div>
+            <div className="w-px h-8 bg-slate-100"></div>
+            <div className="text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Departments</p>
+              <p className="text-2xl font-serif font-black text-accent-gold">
+                {new Set(careers.map(c => c.department)).size}
+              </p>
+            </div>
           </div>
-          <div className="w-px h-8 bg-slate-100"></div>
-          <div className="text-center">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Departments</p>
-            <p className="text-2xl font-serif font-black text-accent-gold">
-              {new Set(careers.map(c => c.department)).size}
-            </p>
-          </div>
+          <button 
+            onClick={() => setShowCreateForm(true)}
+            className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 h-full"
+          >
+            <Plus size={20} />
+            Post New Job
+          </button>
         </div>
       </div>
+
+      {showCreateForm ? (
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <button 
+              onClick={() => {
+                setShowCreateForm(false);
+                fetchCareers();
+              }}
+              className="flex items-center gap-2 text-primary hover:text-accent-gold transition-colors font-bold"
+            >
+              <ArrowLeft size={20} />
+              Back to List
+            </button>
+            <h2 className="text-2xl font-bold text-primary">Post New Opportunity</h2>
+          </div>
+          <CreateCareer onComplete={() => {
+            setShowCreateForm(false);
+            fetchCareers();
+          }} />
+        </motion.div>
+      ) : (
+        <>
 
       {error && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl flex items-center gap-3">
@@ -246,6 +292,8 @@ export default function ManageCareers() {
             <Plus size={18} /> Add New Role
           </button>
         </div>
+      )}
+      </>
       )}
     </div>
   );

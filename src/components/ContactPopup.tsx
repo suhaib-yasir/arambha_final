@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Mail, Phone, ArrowRight, Send } from "lucide-react";
+import { X, Mail, Phone, ArrowRight, Send, Loader2 } from "lucide-react";
+import { sendContactMessage } from "../services/contactService";
 
 interface ContactPopupProps {
   isOpen: boolean;
@@ -11,16 +12,25 @@ export default function ContactPopup({ isOpen, onClose }: ContactPopupProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
+    subject: "Website Inquiry",
     message: ""
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate submission
-    setTimeout(() => {
+    setIsSubmitting(true);
+    try {
+      await sendContactMessage(formData);
       setIsSubmitted(true);
-    }, 400);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAndClose = () => {
@@ -28,7 +38,7 @@ export default function ContactPopup({ isOpen, onClose }: ContactPopupProps) {
     // Small delay before resetting state to allow exit animation
     setTimeout(() => {
       setIsSubmitted(false);
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "Website Inquiry", message: "" });
     }, 500);
   };
 
@@ -106,10 +116,21 @@ export default function ContactPopup({ isOpen, onClose }: ContactPopupProps) {
                     </div>
 
                     <div className="space-y-1 group">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-0.5">Phone (Optional)</label>
+                      <input
+                        type="tel"
+                        placeholder="+91 99999 99999"
+                        className="w-full py-2 bg-transparent border-b border-slate-200 focus:border-primary outline-none transition-all font-sans text-primary placeholder:text-slate-300"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="space-y-1 group">
                       <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-0.5">Message</label>
                       <textarea
                         required
-                        rows={2}
+                        rows={1}
                         placeholder="How can we help?"
                         className="w-full py-2 bg-transparent border-b border-slate-200 focus:border-primary outline-none transition-all font-sans text-primary placeholder:text-slate-300 resize-none"
                         value={formData.message}
@@ -123,9 +144,10 @@ export default function ContactPopup({ isOpen, onClose }: ContactPopupProps) {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         type="submit"
-                        className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30"
+                        disabled={isSubmitting}
+                        className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 disabled:opacity-50"
                       >
-                        <Send size={20} />
+                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                       </motion.button>
                     </div>
                   </form>
