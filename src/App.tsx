@@ -18,6 +18,8 @@ const Signup = lazy(() => import("./pages/Signup"));
 const LegalSupport = lazy(() => import("./pages/LegalSupport"));
 const AdminPortal = lazy(() => import("./pages/admin/AdminPortal"));
 const ProgramDetails = lazy(() => import("./pages/ProgramDetails"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const CategoryGallery = lazy(() => import("./pages/CategoryGallery"));
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
 import ReferralPopup from "./components/ReferralPopup";
@@ -71,6 +73,8 @@ export default function App() {
               <Route path="/programs/:id" element={<ProgramDetails />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/:slug" element={<ServiceDetail />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/gallery/:category" element={<CategoryGallery />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/legal-support" element={<LegalSupport />} />
               <Route path="/login" element={<Login />} />

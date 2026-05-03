@@ -52,6 +52,7 @@ export default function Navbar() {
     { path: "/about", label: "About" },
     { path: "/programs", label: "Programs" },
     { path: "/services", label: "Services" },
+    { path: "/gallery", label: "Gallery" },
     { path: "/careers", label: "Careers" },
   ];
 
