@@ -1,35 +1,61 @@
 import { useState, useEffect } from "react";
+import { onSnapshot, doc } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 import { motion, AnimatePresence } from "motion/react";
-import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase } from "lucide-react";
+import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase, Users, FileText, MessageSquare } from "lucide-react";
+import { getStats } from "../../services/careerService";
 import ManageCourses from "./ManageCourses";
-import CreateCourse from "./CreateCourse";
 import ManageCareers from "./ManageCareers";
-import CreateCareer from "./CreateCareer";
+import ManageEnrollments from "./ManageEnrollments";
+import ManageContacts from "./ManageContacts";
+import ManageApplications from "./ManageApplications";
 import { useLocation, useNavigate } from "react-router-dom";
 
-type TabType = "manage" | "create" | "manage-careers" | "create-career";
+type TabType = "manage" | "manage-careers" | "enrollments" | "inquiries" | "applications";
 
 export default function AdminPortal() {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("manage");
 
+  const [stats, setStats] = useState({ total_enrollments: 0, total_applications: 0, total_contacts: 0 });
+
   // Handle URL params if coming from a "Re-upload" link
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get("tab");
-    if (tab && ["manage", "create", "manage-careers", "create-career"].includes(tab)) {
+    if (tab && ["manage", "manage-careers", "enrollments", "inquiries", "applications"].includes(tab)) {
       setActiveTab(tab as TabType);
     } else if (params.get("courseId")) {
-      setActiveTab("create");
+      setActiveTab("manage"); // Or handle opening the create form inside ManageCourses
     }
   }, [location]);
 
+  // Real-time stats listener
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "stats", "global"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log("Real-time Stats Update:", data);
+        setStats({
+          total_enrollments: data.total_enrollments || 0,
+          total_applications: data.total_applications || 0,
+          total_contacts: data.total_contacts || 0
+        });
+      }
+    }, (err) => {
+      console.error("Stats listener error:", err);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const tabs = [
     { id: "manage", label: "Manage Courses", icon: LayoutDashboard },
-    { id: "create", label: "Create Course", icon: PlusCircle },
-    { id: "manage-careers", label: "Manage Careers", icon: Briefcase },
-    { id: "create-career", label: "Post Job", icon: PlusCircle },
+    { id: "manage-careers", label: "Manage Jobs", icon: Briefcase },
+    { id: "applications", label: "Applications", icon: FileText },
+    { id: "enrollments", label: "Enrollments", icon: Users },
+    { id: "inquiries", label: "Inquiries", icon: MessageSquare },
   ];
 
   return (
@@ -47,9 +73,10 @@ export default function AdminPortal() {
                 <p className="text-sm text-on-surface-variant flex items-center gap-1">
                   Arambha LMS <ChevronRight size={14} /> 
                   {activeTab === "manage" && "Course Management"}
-                  {activeTab === "create" && "New Course Deployment"}
                   {activeTab === "manage-careers" && "Talent Management"}
-                  {activeTab === "create-career" && "Career Posting"}
+                  {activeTab === "applications" && "Applications"}
+                  {activeTab === "enrollments" && "Enrollments"}
+                  {activeTab === "inquiries" && "Inquiries"}
                 </p>
               </div>
             </div>
@@ -72,6 +99,37 @@ export default function AdminPortal() {
               ))}
             </div>
           </div>
+
+          {/* Quick Stats Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+            <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-4">
+              <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                <Users size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Enrollments</p>
+                <h4 className="text-xl font-bold text-primary">{stats.total_enrollments}</h4>
+              </div>
+            </div>
+            <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-4">
+              <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">
+                <FileText size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Career Applications</p>
+                <h4 className="text-xl font-bold text-primary">{stats.total_applications}</h4>
+              </div>
+            </div>
+            <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-4">
+              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+                <MessageSquare size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Website Inquiries</p>
+                <h4 className="text-xl font-bold text-primary">{stats.total_contacts}</h4>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -86,9 +144,10 @@ export default function AdminPortal() {
             transition={{ duration: 0.2 }}
           >
             {activeTab === "manage" && <ManageCourses />}
-            {activeTab === "create" && <CreateCourse />}
             {activeTab === "manage-careers" && <ManageCareers />}
-            {activeTab === "create-career" && <CreateCareer />}
+            {activeTab === "enrollments" && <ManageEnrollments />}
+            {activeTab === "inquiries" && <ManageContacts />}
+            {activeTab === "applications" && <ManageApplications />}
           </motion.div>
         </AnimatePresence>
       </main>

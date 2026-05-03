@@ -8,9 +8,10 @@ import {
   Search, ShoppingCart, Globe, Bell, Heart, Menu,
   MapPin, Briefcase, GraduationCap, Banknote, ArrowRight,
   ChevronLeft, ChevronRight, MessageSquare, BookOpen,
-  Target, Linkedin, Instagram, Mail, Phone, Star
+  Target, Linkedin, Instagram, Mail, Phone, Star, Loader2
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { applyForJob } from '../services/careerService';
 import heroStudentsImg from "../assets/careers/hero-careers.svg";
 import designExcellenceImg from "../assets/careers/design-excellence.png";
 import impactfulCollabImg from "../assets/careers/impactful-collaboration.png";
@@ -530,6 +531,8 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
     customRole: '',
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (roleApplied) {
       setFormData(prev => ({ ...prev, roleApplied }));
@@ -620,34 +623,47 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       alert("Invalid email format. Please enter a valid email (e.g., @gmail.com, .edu.in).");
+      setLoading(false);
       return;
     }
 
     const phoneDigits = formData.phone.replace(/\D/g, '');
     if (phoneDigits.length !== 10) {
       alert("Please enter exactly 10 digits for Phone Number.");
+      setLoading(false);
       return;
     }
 
     const whatsappDigits = formData.whatsapp.replace(/\D/g, '');
     if (whatsappDigits.length !== 10) {
       alert("Please enter exactly 10 digits for WhatsApp Number.");
+      setLoading(false);
       return;
     }
 
-    const finalData = { ...formData };
-    if (roleApplied === 'custom') {
-      finalData.roleApplied = formData.customRole || '';
+    try {
+      const finalData = { ...formData };
+      if (roleApplied === 'custom') {
+        finalData.roleApplied = formData.customRole || '';
+      }
+      
+      await applyForJob(finalData);
+      
+      alert("Thank you for your application! We have sent a detailed notification to the admin and we will review your profile shortly.");
+      if (onClose) onClose();
+    } catch (error: any) {
+      console.error("Application error:", error);
+      alert("Failed to submit application: " + error.message);
+    } finally {
+      setLoading(false);
     }
-    console.log("Form submitted:", finalData);
-    alert("Thank you for your application! We will review it shortly.");
-    if (onClose) onClose();
   };
 
   if (isModal && !isOpen) return null;
@@ -1077,12 +1093,14 @@ const RegistrationForm = ({ isModal = false, isOpen = true, onClose, roleApplied
         <div className="flex justify-center">
           <button
             type="submit"
-            className="text-white px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all font-serif italic"
+            disabled={loading}
+            className="text-white px-8 py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all font-serif italic disabled:opacity-70 disabled:cursor-not-allowed"
             style={{ backgroundColor: COLORS.primary }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.secondary}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.primary}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = COLORS.secondary)}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = COLORS.primary)}
           >
-            Submit Registration
+            {loading ? <Loader2 size={18} className="animate-spin" /> : null}
+            {loading ? 'Submitting...' : 'Submit Registration'}
           </button>
         </div>
       </form>

@@ -15,7 +15,7 @@ from services.firebase_service import get_db
 from firebase_admin import firestore
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import enrollment, progress, certificate
+from routers import enrollment, progress, certificate, contact
 
 app=FastAPI()
 
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(enrollment.router)
 app.include_router(progress.router)
 app.include_router(certificate.router)
+app.include_router(contact.router)
 
 
 @app.get("/")
@@ -361,6 +362,116 @@ async def delete_career(career_id: str):
     db = get_db()
     db.collection("careers").document(career_id).delete()
     return {"success": True}
+
+@app.post("/api/careers/apply")
+async def apply_for_job(
+    role_applied: str = Form(...),
+    name: str = Form(...),
+    email: str = Form(...),
+    phone: str = Form(...),
+    whatsapp: str = Form(...),
+    address: str = Form(...),
+    skills: str = Form(...),
+    area_of_interest: str = Form(...),
+    college_name: str = Form(...),
+    year_of_passing: str = Form(...),
+    highest_education: str = Form(...),
+    work_experience_status: str = Form(...),
+    linkedin_url: str = Form(None),
+    portfolio_url: str = Form(None),
+    github_url: str = Form(None),
+    reference_name: str = Form(None)
+):
+    from services.notification_service import send_enrollment_email
+    db = get_db()
+    
+    if db is None:
+        # Send notification email even if DB is down for testing
+        details = f"Phone: {phone}\nWhatsApp: {whatsapp}\nSkills: {skills}\nCollege: {college_name}\nEducation: {highest_education}\nExperience: {work_experience_status}\nLinkedIn: {linkedin_url}\nNote: DB was unavailable."
+        send_enrollment_email(
+            student_name=name,
+            student_email=email,
+            program_name=role_applied,
+            program_type="Career/Job",
+            other_details=details
+        )
+        return {"success": True, "id": "mock_id_db_unavailable"}
+
+    application_ref = db.collection("applicants").document()
+    
+    app_data = {
+        "roleApplied": role_applied,
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "whatsapp": whatsapp,
+        "address": address,
+        "skills": skills,
+        "areaOfInterest": area_of_interest,
+        "collegeName": college_name,
+        "yearOfPassing": year_of_passing,
+        "highestEducation": highest_education,
+        "workExperienceStatus": work_experience_status,
+        "linkedinUrl": linkedin_url,
+        "portfolioUrl": portfolio_url,
+        "githubUrl": github_url,
+        "referenceName": reference_name,
+        "appliedAt": firestore.SERVER_TIMESTAMP
+    }
+    
+    application_ref.set(app_data)
+    
+    # Update stats
+    stats_ref = db.collection('stats').document('global')
+    stats_ref.set({
+        'total_applications': firestore.Increment(1)
+    }, merge=True)
+    
+    # Send notification email
+    details = f"Phone: {phone}\nWhatsApp: {whatsapp}\nSkills: {skills}\nCollege: {college_name}\nEducation: {highest_education}\nExperience: {work_experience_status}\nLinkedIn: {linkedin_url}"
+    
+    send_enrollment_email(
+        student_name=name,
+        student_email=email,
+        program_name=role_applied,
+        program_type="Career/Job",
+        other_details=details
+    )
+    
+    return {"success": True, "id": application_ref.id}
+
+@app.get("/api/careers/applications")
+async def get_applications():
+    db = get_db()
+    if db is None:
+        return []
+    
+    try:
+        docs = db.collection('applicants').order_by('appliedAt', direction=firestore.Query.DESCENDING).stream()
+        apps = []
+        for doc in docs:
+            data = doc.to_dict()
+            data['id'] = doc.id
+            if 'appliedAt' in data and data['appliedAt'] and hasattr(data['appliedAt'], 'isoformat'):
+                data['appliedAt'] = data['appliedAt'].isoformat()
+            apps.append(data)
+        return apps
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/stats")
+async def get_stats():
+    db = get_db()
+    stats_snap = db.collection('stats').document('global').get()
+    if stats_snap.exists:
+        data = stats_snap.to_dict()
+        print(f"Stats Data from DB: {data}")
+        return {
+            "total_enrollments": data.get("total_enrollments", 0),
+            "total_applications": data.get("total_applications", 0),
+            "total_contacts": data.get("total_contacts", 0)
+        }
+    return {"total_enrollments": 0, "total_applications": 0, "total_contacts": 0}
 
 # ----------------------------
 # Courses API

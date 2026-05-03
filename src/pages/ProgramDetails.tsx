@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
+import { CheckCircle2, ArrowLeft, Loader2, X } from "lucide-react";
 import { programs } from "../utils/programsData";
 import programsHeroImg from "../assets/programs-hero.svg";
+import { useAuth } from "../context/AuthContext";
+import { enrollInCourse } from "../services/courseService";
+import { useState } from "react";
 
 export default function ProgramDetails() {
   const { id } = useParams<{ id: string }>();
@@ -10,10 +13,63 @@ export default function ProgramDetails() {
   
   const program = programs.find(p => p.id === parseInt(id || "1"));
 
+  const { currentUser } = useAuth();
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrolled, setEnrolled] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: currentUser?.displayName || '',
+    email: currentUser?.email || '',
+    phone: '',
+    whatsapp: '',
+    address: '',
+    collegeName: '',
+    yearOfPassing: '',
+    highestEducation: '',
+  });
+
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        name: currentUser.displayName || '',
+        email: currentUser.email || '',
+      }));
+    }
+  }, [currentUser]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEnrollClick = () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!program || !currentUser) return;
+
+    setEnrolling(true);
+    try {
+      await enrollInCourse(currentUser.uid, program.id.toString(), formData);
+      setEnrolled(true);
+      setIsFormOpen(false);
+      alert("Congratulations! You have successfully enrolled in " + program.title + ". Your details have been updated and a notification has been sent to the admin.");
+    } catch (error: any) {
+      console.error("Enrollment failed:", error);
+      alert("Failed to enroll: " + error.message);
+    } finally {
+      setEnrolling(false);
+    }
+  };
 
   if (!program) {
     return (
@@ -113,10 +169,12 @@ export default function ProgramDetails() {
                 </div>
 
                 <button 
-                  onClick={() => navigate("/login")}
-                  className="w-full bg-[#1B2B48] text-white font-bold py-4 rounded-xl text-base hover:bg-[#10192A] transition-colors shadow-md"
+                  onClick={handleEnrollClick}
+                  disabled={enrolling || enrolled}
+                  className="w-full bg-[#1B2B48] text-white font-bold py-4 rounded-xl text-base hover:bg-[#10192A] transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Enroll Now
+                  {enrolling && <Loader2 className="animate-spin" size={20} />}
+                  {enrolled ? "Enrolled Successfully" : (enrolling ? "Processing..." : "Enroll Now")}
                 </button>
               </div>
             </div>
@@ -124,6 +182,152 @@ export default function ProgramDetails() {
           </div>
         </div>
       </div>
+
+      {/* Enrollment Form Modal */}
+      {isFormOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl relative flex flex-col max-h-[90vh]">
+            <button
+              onClick={() => setIsFormOpen(false)}
+              className="absolute top-4 right-4 z-20 text-gray-500 hover:text-gray-800 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="p-8 sm:p-10 overflow-y-auto">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-[#1B2B48] mb-2">Student Enrollment Form</h2>
+                <p className="text-slate-500 text-sm">Please provide your details to complete the enrollment for <span className="font-bold text-[#1B2B48]">{program.title}</span>.</p>
+              </div>
+
+              <form onSubmit={handleFormSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">WhatsApp Number</label>
+                    <input
+                      type="tel"
+                      name="whatsapp"
+                      required
+                      value={formData.whatsapp}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Permanent Address</label>
+                  <textarea
+                    name="address"
+                    required
+                    rows={2}
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all resize-none"
+                  ></textarea>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">College Name</label>
+                    <input
+                      type="text"
+                      name="collegeName"
+                      required
+                      value={formData.collegeName}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Year of Passing</label>
+                    <input
+                      type="text"
+                      name="yearOfPassing"
+                      required
+                      value={formData.yearOfPassing}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Highest Education Qualification</label>
+                  <select
+                    name="highestEducation"
+                    required
+                    value={formData.highestEducation}
+                    onChange={handleChange}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                  >
+                    <option value="">Select Qualification</option>
+                    <option value="B.Tech">B.Tech</option>
+                    <option value="B.Com">B.Com</option>
+                    <option value="B.Sc">B.Sc</option>
+                    <option value="BCA">BCA</option>
+                    <option value="M.Tech">M.Tech</option>
+                    <option value="MBA">MBA</option>
+                    <option value="MCA">MCA</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsFormOpen(false)}
+                    className="flex-1 py-4 bg-slate-100 text-[#1B2B48] font-bold rounded-xl hover:bg-slate-200 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={enrolling}
+                    className="flex-1 py-4 bg-[#1B2B48] text-white font-bold rounded-xl hover:bg-[#10192A] shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  >
+                    {enrolling ? <Loader2 size={18} className="animate-spin" /> : null}
+                    {enrolling ? 'Processing...' : 'Confirm Enrollment'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -31,18 +31,22 @@ CRED_PATH=os.path.join(
  "credentials.json"
 )
 
+creds = None
+service = None
 
-creds=Credentials.from_service_account_file(
- CRED_PATH,
- scopes=SCOPES
-)
+if os.path.exists(CRED_PATH):
+    creds=Credentials.from_service_account_file(
+     CRED_PATH,
+     scopes=SCOPES
+    )
 
-
-service=build(
- "drive",
- "v3",
- credentials=creds
-)
+    service=build(
+     "drive",
+     "v3",
+     credentials=creds
+    )
+else:
+    print("WARNING: credentials.json not found. Drive service disabled.")
 
 
 

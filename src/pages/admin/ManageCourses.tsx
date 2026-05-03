@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getCourses, deleteCourse, updateCourse, Course } from '../../services/courseService';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/firebase';
+import { deleteCourse, updateCourse, Course } from '../../services/courseService';
 import { useNavigate } from 'react-router-dom';
 import { 
   Trash2, 
@@ -13,8 +15,11 @@ import {
   Pencil,
   UploadCloud,
   X,
-  Save
+  Save,
+  PlusCircle,
+  ArrowLeft
 } from 'lucide-react';
+import CreateCourse from './CreateCourse';
 
 // Import program images for consistent branding
 import spokenEnglishImg from "../../assets/programs/spoken-english-mastery.png";
@@ -50,23 +55,27 @@ export default function ManageCourses() {
   const [editVideoTitle, setEditVideoTitle] = useState('');
   const [editSaving, setEditSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
     setLoading(true);
-    try {
-      const data = await getCourses();
+    const q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Course[];
       setCourses(data);
-    } catch (err) {
-      console.error(err);
-      setMessage({ type: 'error', text: 'Failed to load courses.' });
-    } finally {
       setLoading(false);
-    }
-  };
+    }, (err) => {
+      console.error("Courses listener error:", err);
+      setLoading(false);
+      setMessage({ type: 'error', text: 'Failed to load courses from live stream.' });
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleDelete = async (id: string) => {
     try {
@@ -127,7 +136,7 @@ export default function ManageCourses() {
             <p className="text-on-surface-variant">Review, edit, and manage your uploaded content.</p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input
@@ -138,9 +147,42 @@ export default function ManageCourses() {
                 className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-accent-gold outline-none transition-all w-64 md:w-80"
               />
             </div>
+            <button 
+              onClick={() => setShowCreateForm(true)}
+              className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+            >
+              <PlusCircle size={20} />
+              Create New
+            </button>
           </div>
         </div>
 
+        {showCreateForm ? (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm"
+          >
+            <div className="flex items-center justify-between mb-8">
+              <button 
+                onClick={() => {
+                  setShowCreateForm(false);
+                  fetchCourses();
+                }}
+                className="flex items-center gap-2 text-primary hover:text-accent-gold transition-colors font-bold"
+              >
+                <ArrowLeft size={20} />
+                Back to List
+              </button>
+              <h2 className="text-2xl font-bold text-primary">Deploy New Course</h2>
+            </div>
+            <CreateCourse onComplete={() => {
+              setShowCreateForm(false);
+              fetchCourses();
+            }} />
+          </motion.div>
+        ) : (
+          <>
         <AnimatePresence>
           {message && (
             <motion.div
@@ -255,7 +297,9 @@ export default function ManageCourses() {
             <p className="text-on-surface-variant mt-2">Start by uploading a new video.</p>
           </div>
         )}
-      </div>
+        </>
+      )}
+    </div>
 
       {/* ── Edit Video Info Modal ── */}
       <AnimatePresence>

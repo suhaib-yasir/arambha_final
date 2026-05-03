@@ -50,3 +50,43 @@ export const deleteCareer = async (id: string): Promise<{ success: boolean }> =>
   }
   return response.json();
 };
+
+export const applyForJob = async (applicationData: any): Promise<{ success: boolean; id: string }> => {
+  const formData = new FormData();
+  Object.keys(applicationData).forEach(key => {
+    const value = applicationData[key];
+    if (value !== undefined && value !== null) {
+      // Map frontend camelCase to backend snake_case if necessary, 
+      // but here I'll just append as is since backend expects specific Form fields
+      const backendKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      formData.append(backendKey, value);
+    }
+  });
+
+  const response = await fetch(`${API_URL}/api/careers/apply`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to submit application: ${errorText}`);
+  }
+  return response.json();
+};
+
+export const getStats = async (): Promise<{ total_enrollments: number; total_applications: number; total_contacts: number }> => {
+  const response = await fetch(`${API_URL}/api/stats`);
+  if (!response.ok) {
+    return { total_enrollments: 0, total_applications: 0, total_contacts: 0 };
+  }
+  return response.json();
+};
+
+export const getApplications = async () => {
+  const response = await fetch(`${API_URL}/api/careers/applications`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch job applications');
+  }
+  return response.json();
+};

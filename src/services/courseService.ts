@@ -48,3 +48,47 @@ export const updateCourse = async (courseId: string, data: Partial<Course>) => {
   }
 };
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+
+export const enrollInCourse = async (userId: string, courseId: string, details: any = {}) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/enroll`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        user_id: userId, 
+        course_id: courseId,
+        ...details 
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to enroll in course');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Enrollment error:', error);
+    throw error;
+  }
+};
+
+export const getEnrollments = async () => {
+  try {
+    const enrollmentsRef = collection(db, 'enrollments');
+    const q = query(enrollmentsRef, orderBy('enrolled_at', 'desc'));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error fetching enrollments:', error);
+    throw error;
+  }
+};
+
