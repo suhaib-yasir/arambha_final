@@ -20,18 +20,6 @@ import programsHeroImg from "../assets/programs-hero.svg";
 
 const CATEGORIES = ["All", "Spoken English", "Schooling", "BTech", "Graduate", "Job Ready"];
 
-const IMAGE_MAP: Record<string, any> = {
-  "Spoken English Mastery": spokenEnglishImg,
-  "Foundation 60": foundation60Img,
-  "Digital Marketing Expert": digitalMarketingImg,
-  "Campus to Corporate Program": campusToCorporateImg,
-  "Human Resource Management": hrManagementImg,
-  "Banking & Finance Masterclass": bankingFinanceImg,
-  "Full Stack Java Developer": fullStackJavaImg,
-  "Data Science & AI": dataScienceImg,
-  "AutoCAD Design": autocadImg,
-};
-
 const WHY_CHOOSE_US = [
   {
     title: "Industry-aligned curriculum",
@@ -91,14 +79,17 @@ export default function ProgramsScreen() {
           return;
         }
         const mapped = courses.map((c, idx) => ({
+          // Use the Firestore document ID as the canonical ID — this is what
+          // ProgramDetails will use to fetch from Firestore.
           id: c.id || `dynamic-${idx}`,
           title: c.title || "Untitled Course",
           category: c.category || "Job Ready",
           duration: c.duration || "Self-Paced",
           description: c.description || "Premium course content uploaded by Arambha Experts.",
-          image: IMAGE_MAP[c.title] || fullStackJavaImg,
-          videoUrl: c.videoId ? `https://drive.google.com/uc?export=download&id=${c.videoId}` : "https://www.w3schools.com/html/mov_bbb.mp4",
-          isDynamic: true
+          image: c.image || fullStackJavaImg,
+          videoUrl: c.videoId
+            ? `https://drive.google.com/uc?export=download&id=${c.videoId}`
+            : "https://www.w3schools.com/html/mov_bbb.mp4",
         }));
         setDynamicPrograms(mapped);
       } catch (err) {
@@ -112,14 +103,10 @@ export default function ProgramsScreen() {
     fetchDynamicPrograms();
   }, []);
 
-  const allPrograms = dynamicPrograms.map(p => ({
-    ...p,
-    videoUrl: p.videoUrl || "https://www.w3schools.com/html/mov_bbb.mp4"
-  }));
-
-  const filteredPrograms = selectedCategory === "All"
-    ? allPrograms
-    : allPrograms.filter(program => program.category === selectedCategory);
+  const filteredPrograms =
+    selectedCategory === "All"
+      ? dynamicPrograms
+      : dynamicPrograms.filter((p) => p.category === selectedCategory);
 
   return (
     <div className="w-full font-sans programs-page-root">
@@ -132,20 +119,11 @@ export default function ProgramsScreen() {
           --font-serif: "Lora", serif;
         }
 
-        .font-serif {
-          font-family: var(--font-serif), serif;
-        }
+        .font-serif { font-family: var(--font-serif), serif; }
+        .font-sans  { font-family: var(--font-sans), sans-serif; }
 
-        .font-sans {
-          font-family: var(--font-sans), sans-serif;
-        }
+        .programs-page-root { overflow-x: hidden; }
 
-        /* ── Responsive: prevent horizontal overflow on the whole page ── */
-        .programs-page-root {
-          overflow-x: hidden;
-        }
-
-        /* ── Hero image: normal on mobile, oversized bleed only on desktop ── */
         .programs-hero-img {
           width: 100%;
           max-width: 100%;
@@ -162,7 +140,6 @@ export default function ProgramsScreen() {
           }
         }
 
-        /* ── Category filter: allow pills to scroll on very small screens ── */
         .category-filter-bar {
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
@@ -179,39 +156,23 @@ export default function ProgramsScreen() {
           }
         }
 
-        /* ── Program card image: shorter on mobile to save vertical space ── */
         @media (max-width: 639px) {
-          .program-card-img {
-            height: 180px;
-          }
+          .program-card-img { height: 180px; }
+          .cta-heading { font-size: 1.6rem; line-height: 1.2; }
+          .cta-body   { font-size: 0.95rem; }
         }
 
-        /* ── Why-choose-us cards: equal height in grid rows ── */
-        .why-card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        /* ── CTA section heading: scale down gracefully on small screens ── */
-        @media (max-width: 639px) {
-          .cta-heading {
-            font-size: 1.6rem;
-            line-height: 1.2;
-          }
-          .cta-body {
-            font-size: 0.95rem;
-          }
-        }
+        .why-card { display: flex; flex-direction: column; align-items: center; }
       `}} />
-      {/* Hero Section */}
+
+      {/* ── Hero ── */}
       <section className="relative pt-0 sm:pt-4 pb-0 sm:pb-4 overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-8 lg:gap-0">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 text-left md:text-left w-full flex flex-col justify-center py-8 sm:py-12 lg:py-8 pl-4 sm:pl-6 lg:pl-8"
+              className="flex-1 text-left w-full flex flex-col justify-center py-8 sm:py-12 lg:py-8 pl-4 sm:pl-6 lg:pl-8"
             >
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.15] mb-5 sm:mb-6 italic">
                 Choose the Right Program to{" "}
@@ -223,7 +184,7 @@ export default function ProgramsScreen() {
               <div className="flex flex-wrap gap-3 sm:gap-4 font-sans">
                 <button
                   className="bg-accent-gold hover:bg-accent-gold-dark text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-lg shadow-accent-gold/20 transition-all font-serif italic text-sm sm:text-base"
-                  onClick={() => document.getElementById('programs-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => document.getElementById("programs-section")?.scrollIntoView({ behavior: "smooth" })}
                 >
                   View Programs
                 </button>
@@ -237,7 +198,6 @@ export default function ProgramsScreen() {
               animate={{ opacity: 1, scale: 1 }}
               className="flex-1 relative w-full hidden md:flex justify-center lg:justify-end items-center"
             >
-              {/* programs-hero-img: 100% wide on mobile, 160% bleed only on lg+ (see <style> above) */}
               <img
                 src={programsHeroImg}
                 alt="Students learning together"
@@ -248,17 +208,21 @@ export default function ProgramsScreen() {
         </div>
       </section>
 
-      {/* Category Filter */}
+      {/* ── Category Filter ── */}
       <section id="programs-section" className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-20 font-sans">
-        <h2 className="text-center text-2xl sm:text-4xl font-serif text-primary font-bold mb-6 sm:mb-10 italic">Explore Our Programs</h2>
-        {/* category-filter-bar: scrollable on tiny screens, wraps on ≥480px (see <style> above) */}
+        <h2 className="text-center text-2xl sm:text-4xl font-serif text-primary font-bold mb-6 sm:mb-10 italic">
+          Explore Our Programs
+        </h2>
         <div className="bg-white border-2 border-accent-gold p-2 rounded-2xl flex gap-2 shadow-lg max-w-3xl mx-auto category-filter-bar">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${selectedCategory === cat ? "bg-primary text-white" : "bg-transparent text-text-muted hover:bg-accent-gold/10"
-                }`}
+              className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
+                selectedCategory === cat
+                  ? "bg-primary text-white"
+                  : "bg-transparent text-text-muted hover:bg-accent-gold/10"
+              }`}
             >
               {cat}
             </button>
@@ -266,12 +230,12 @@ export default function ProgramsScreen() {
         </div>
       </section>
 
-      {/* Program Sections */}
+      {/* ── Program Grid ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-12 h-12 text-accent-gold animate-spin mb-4" />
-            <p className="text-primary font-serif text-xl">Loading premium programs...</p>
+            <p className="text-primary font-serif text-xl">Loading premium programs…</p>
           </div>
         ) : filteredPrograms.length > 0 ? (
           selectedCategory === "All" ? (
@@ -318,11 +282,13 @@ export default function ProgramsScreen() {
         )}
       </div>
 
-      {/* Why Choose Us */}
-      <section style={{ backgroundColor: '#D4AF37' }} className="py-14 sm:py-24 mb-12 sm:mb-20 font-sans">
+      {/* ── Why Choose Us ── */}
+      <section style={{ backgroundColor: "#D4AF37" }} className="py-14 sm:py-24 mb-12 sm:mb-20 font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white italic">Why Choose Arambha Programs?</h2>
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white italic">
+              Why Choose Arambha Programs?
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {WHY_CHOOSE_US.map((item, i) => (
@@ -331,10 +297,15 @@ export default function ProgramsScreen() {
                 whileHover={{ y: -5 }}
                 className="bg-white p-8 rounded-3xl shadow-sm border border-primary/5 text-center why-card"
               >
-                <div className="w-16 h-16 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3" style={{ backgroundColor: '#006CA5' }}>
+                <div
+                  className="w-16 h-16 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3"
+                  style={{ backgroundColor: "#006CA5" }}
+                >
                   {item.icon}
                 </div>
-                <h4 className="text-xl font-bold text-primary mb-3 leading-tight font-serif italic">{item.title}</h4>
+                <h4 className="text-xl font-bold text-primary mb-3 leading-tight font-serif italic">
+                  {item.title}
+                </h4>
                 <p className="text-sm text-text-muted leading-relaxed font-sans">{item.desc}</p>
               </motion.div>
             ))}
@@ -342,20 +313,26 @@ export default function ProgramsScreen() {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* ── Final CTA ── */}
       <section className="py-4 sm:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="brand-gradient-gold rounded-3xl p-8 sm:p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_#ffffff,_transparent)]"></div>
             <div className="relative z-10">
-              {/* cta-heading / cta-body: scale down on mobile (see <style> above) */}
-              <h2 className="text-3xl md:text-headline-lg font-serif font-extrabold text-primary mb-8 italic cta-heading">Start Your Confidence Journey Today</h2>
+              <h2 className="text-3xl md:text-headline-lg font-serif font-extrabold text-primary mb-8 italic cta-heading">
+                Start Your Confidence Journey Today
+              </h2>
               <p className="text-primary/80 max-w-2xl mx-auto mb-12 text-lg font-medium font-sans cta-body">
-                Join structured live training sessions from anywhere in Karnataka. Transform your communication and career with Arambha's proven system.
+                Join structured live training sessions from anywhere in Karnataka. Transform your
+                communication and career with Arambha's proven system.
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center font-serif italic">
-                <Link to="/careers" className="bg-primary text-white px-10 py-4 rounded-xl font-bold hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group text-lg">
-                  View Careers <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <Link
+                  to="/careers"
+                  className="bg-primary text-white px-10 py-4 rounded-xl font-bold hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group text-lg"
+                >
+                  View Careers{" "}
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <button className="bg-white text-primary border-2 border-primary px-10 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-lg">
                   Book Free Demo <Calendar className="h-5 w-5" />
@@ -365,7 +342,8 @@ export default function ProgramsScreen() {
           </div>
         </div>
       </section>
-      {/* Video Modal */}
+
+      {/* ── Video Modal ── */}
       {previewVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <div
@@ -394,30 +372,39 @@ export default function ProgramsScreen() {
   );
 }
 
+// ─────────────────────────────────────────────
+// ProgramSection
+// ─────────────────────────────────────────────
 function ProgramSection({
   title,
   programs,
   onPreview,
   isAdmin,
   enrolledProgramIds,
-  onEnroll
+  onEnroll,
 }: {
-  title: string,
-  programs: any[],
-  onPreview: (url: string) => void,
-  isAdmin: boolean,
-  enrolledProgramIds: string[],
-  onEnroll: (id: string) => void
+  title: string;
+  programs: any[];
+  onPreview: (url: string) => void;
+  isAdmin: boolean;
+  enrolledProgramIds: string[];
+  onEnroll: (id: string) => void;
 }) {
   return (
     <section className="mb-20">
       <div className="text-center mb-2">
-        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold inline-block italic text-primary">{title}</h2>
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold inline-block italic text-primary">
+          {title}
+        </h2>
         <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-accent-gold"></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
         {programs.map((program, i) => {
           const isEnrolled = enrolledProgramIds.includes(program?.id);
+
+          // All courses now route via ?courseId= so ProgramDetails always
+          // knows the exact Firestore document ID to fetch.
+          const detailsLink = `/programs/detail?courseId=${encodeURIComponent(program?.id)}`;
 
           return (
             <motion.div
@@ -427,71 +414,61 @@ function ProgramSection({
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className="bg-transparent border-2 rounded-3xl overflow-hidden flex flex-col transition-all hover:-translate-y-2 hover:shadow-xl"
-              style={{ borderColor: '#006CA5' }}
+              style={{ borderColor: "#006CA5" }}
             >
-              {/* program-card-img: h-60 on tablet+, shorter on mobile (see <style> above) */}
+              {/* Card image */}
               <div className="h-60 overflow-hidden program-card-img">
-                <img src={program.image} alt={program.title} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" />
+                <img
+                  src={program.image}
+                  alt={program.title}
+                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
+                />
               </div>
 
               <div className="p-8 flex-grow flex flex-col">
-                <h3 className="text-2xl font-bold text-primary mb-4 leading-tight group">
-                  <span className="title-accent">{program?.title || 'Untitled Program'}</span>
+                <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">
+                  {program?.title || "Untitled Program"}
                 </h3>
                 <p className="text-text-muted text-sm line-clamp-3 mb-8 font-lora leading-relaxed">
-                  {program?.description || 'No description available.'}
+                  {program?.description || "No description available."}
                 </p>
                 <div className="mt-auto flex flex-col sm:flex-row gap-3">
-                  {(() => {
-                    const idMap: Record<string, string> = {
-                      "Human Resource Management": "8",
-                      "Digital Marketing Expert": "7",
-                      "Banking & Finance Masterclass": "6",
-                      "AutoCAD Design": "5",
-                      "Data Science & AI": "4",
-                      "Full Stack Java Developer": "3",
-                      "Arambha Campus to Corporate Program": "2",
-                      "Campus to Corporate Program": "2",
-                      "Spoken English Mastery": "1",
-                      "Foundation 60": "9"
-                    };
-                    const id = idMap[program?.title] || "1";
+                  {/* View Details — always links with courseId query param */}
+                  <Link
+                    to={detailsLink}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all text-center text-sm"
+                  >
+                    View Details
+                  </Link>
 
-                    return (
-                      <>
-                        <Link
-                          to={`/programs/${id}`}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all text-center text-sm"
-                        >
-                          View Details
-                        </Link>
-                        {isEnrolled ? (
-                          <button
-                            onClick={() => onPreview(program?.videoUrl)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-green-600 border-2 border-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all text-sm group"
-                          >
-                            View Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => onEnroll(program?.id)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 brand-gradient-navy text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-md text-sm"
-                          >
-                            Enroll
-                          </button>
-                        )}
-                        {isAdmin && (
-                          <button
-                            onClick={() => onPreview(program?.videoUrl)}
-                            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 transition-all text-sm"
-                            title="Preview Video"
-                          >
-                            Preview
-                          </button>
-                        )}
-                      </>
-                    );
-                  })()}
+                  {/* Enroll / View Course */}
+                  {isEnrolled ? (
+                    <button
+                      onClick={() => onPreview(program?.videoUrl)}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-green-600 border-2 border-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all text-sm group"
+                    >
+                      View Course{" "}
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onEnroll(program?.id)}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 brand-gradient-navy text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-md text-sm"
+                    >
+                      Enroll
+                    </button>
+                  )}
+
+                  {/* Admin preview */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => onPreview(program?.videoUrl)}
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 transition-all text-sm"
+                      title="Preview Video"
+                    >
+                      Preview
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -500,15 +477,4 @@ function ProgramSection({
       </div>
     </section>
   );
-}
-
-function getBadgeColor(color: string) {
-  switch (color) {
-    case 'blue': return 'bg-blue-50 text-blue-700 border border-blue-200';
-    case 'orange': return 'bg-orange-50 text-orange-700 border border-orange-200';
-    case 'green': return 'bg-green-50 text-green-700 border border-green-200';
-    case 'purple': return 'bg-purple-50 text-purple-700 border border-purple-200';
-    case 'gold': return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
-    default: return 'bg-slate-50 text-slate-700 border border-slate-200';
-  }
 }

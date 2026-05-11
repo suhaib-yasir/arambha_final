@@ -5,9 +5,9 @@ from googleapiclient.http import MediaFileUpload
 from dotenv import load_dotenv
 from pathlib import Path
 
-env_path=Path(__file__).resolve().parent.parent.parent / ".env"
+env_path=Path(__file__).resolve().parent / ".env"
 
-print(env_path)
+print(f"Loading .env from: {env_path}")
 
 load_dotenv(env_path)
 
@@ -61,16 +61,20 @@ def create_folder(name,parent=None):
       f"and trashed=false"
     )
 
+    # Build list parameters based on whether we're using shared drives
+    list_params = {
+        "q": query,
+        "fields": "files(id,name)",
+        "supportsAllDrives": True,
+        "includeItemsFromAllDrives": True
+    }
+    
+    # Only add corpora and driveId if SHARED_DRIVE_ID is set
+    if SHARED_DRIVE_ID:
+        list_params["corpora"] = "drive"
+        list_params["driveId"] = SHARED_DRIVE_ID
 
-    results=service.files().list(
-        q=query,
-        fields="files(id,name)",
-        supportsAllDrives=True,
-        includeItemsFromAllDrives=True,
-        corpora="drive",
-        driveId=SHARED_DRIVE_ID
-    ).execute()
-
+    results=service.files().list(**list_params).execute()
 
     folders=results.get(
       "files",
@@ -80,22 +84,22 @@ def create_folder(name,parent=None):
     if folders:
         return folders[0]["id"]
 
-
     metadata={
       "name":name,
       "mimeType":
       "application/vnd.google-apps.folder",
-      "parents":[parent],
-      "driveId":SHARED_DRIVE_ID
+      "parents":[parent]
     }
-
+    
+    # Only add driveId if using shared drives
+    if SHARED_DRIVE_ID:
+        metadata["driveId"] = SHARED_DRIVE_ID
 
     folder=service.files().create(
         body=metadata,
         fields="id",
         supportsAllDrives=True
     ).execute()
-
 
     return folder["id"]
 

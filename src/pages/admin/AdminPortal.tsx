@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { motion, AnimatePresence } from "motion/react";
-import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase, Users, FileText, MessageSquare } from "lucide-react";
+import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase, Users, FileText, MessageSquare, BookOpen, Video } from "lucide-react";
 import { getStats } from "../../services/careerService";
 import ManageCourses from "./ManageCourses";
 import ManageCareers from "./ManageCareers";
 import ManageEnrollments from "./ManageEnrollments";
 import ManageContacts from "./ManageContacts";
 import ManageApplications from "./ManageApplications";
+import AddCourseInfo from "./AddCourseInfo";
+import AddWebinars from "./AddWebinars";
 import { useLocation, useNavigate } from "react-router-dom";
 
-type TabType = "manage" | "manage-careers" | "enrollments" | "inquiries" | "applications";
+type TabType = "manage" | "manage-careers" | "course-info" | "enrollments" | "inquiries" | "applications" | "webinar";
 
 export default function AdminPortal() {
   const location = useLocation();
@@ -24,7 +26,7 @@ export default function AdminPortal() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get("tab");
-    if (tab && ["manage", "manage-careers", "enrollments", "inquiries", "applications"].includes(tab)) {
+    if (tab && ["manage", "manage-careers", "course-info", "enrollments", "inquiries", "applications", "webinar"].includes(tab)) {
       setActiveTab(tab as TabType);
     } else if (params.get("courseId")) {
       setActiveTab("manage"); // Or handle opening the create form inside ManageCourses
@@ -52,7 +54,9 @@ export default function AdminPortal() {
 
   const tabs = [
     { id: "manage", label: "Manage Courses", icon: LayoutDashboard },
+    { id: "course-info", label: "Add Course Info", icon: BookOpen },
     { id: "manage-careers", label: "Manage Jobs", icon: Briefcase },
+    { id: "webinar", label: "Manage Webinars", icon: Video },
     { id: "applications", label: "Applications", icon: FileText },
     { id: "enrollments", label: "Enrollments", icon: Users },
     { id: "inquiries", label: "Inquiries", icon: MessageSquare },
@@ -73,7 +77,9 @@ export default function AdminPortal() {
                 <p className="text-sm text-on-surface-variant flex items-center gap-1">
                   Arambha LMS <ChevronRight size={14} /> 
                   {activeTab === "manage" && "Course Management"}
+                  {activeTab === "course-info" && "Add Course Information"}
                   {activeTab === "manage-careers" && "Talent Management"}
+                  {activeTab === "webinar" && "Webinar Management"}
                   {activeTab === "applications" && "Applications"}
                   {activeTab === "enrollments" && "Enrollments"}
                   {activeTab === "inquiries" && "Inquiries"}
@@ -144,7 +150,9 @@ export default function AdminPortal() {
             transition={{ duration: 0.2 }}
           >
             {activeTab === "manage" && <ManageCourses />}
+            {activeTab === "course-info" && <AddCourseInfo />}
             {activeTab === "manage-careers" && <ManageCareers />}
+            {activeTab === "webinar" && <AddWebinars />}
             {activeTab === "enrollments" && <ManageEnrollments />}
             {activeTab === "inquiries" && <ManageContacts />}
             {activeTab === "applications" && <ManageApplications />}

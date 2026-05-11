@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, User, Loader2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { loginUser, loginWithGoogle } from "../services/authService";
+import { isUserAdmin } from "../services/adminService";
 import logo from "../assets/ARAMBHA.svg";
 
 export default function Login() {
@@ -17,8 +18,14 @@ export default function Login() {
     setLoading(true);
     setError(null);
     try {
-      await loginUser(email, password);
-      navigate("/");
+      const user = await loginUser(email, password);
+      // Check if user is admin
+      const adminStatus = await isUserAdmin(user.uid);
+      if (adminStatus) {
+        navigate("/admin/portal");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message || "Failed to sign in. Please check your credentials.");
     } finally {
@@ -30,8 +37,14 @@ export default function Login() {
     setLoading(true);
     setError(null);
     try {
-      await loginWithGoogle();
-      navigate("/");
+      const user = await loginWithGoogle();
+      // Check if user is admin
+      const adminStatus = await isUserAdmin(user.uid);
+      if (adminStatus) {
+        navigate("/admin/portal");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message || "Failed to sign in with Google.");
     } finally {

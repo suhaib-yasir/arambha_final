@@ -24,11 +24,10 @@ const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
 
 const CATEGORIES = [
   "Spoken English",
-  "Digital Marketing",
-  "Professional Development",
-  "Soft Skills",
-  "Technical Training",
-  "Business Essentials"
+  "Schooling",
+  "BTech",
+  "Graduate",
+  "Job Ready"
 ];
 
 export default function CreateCourse() {
