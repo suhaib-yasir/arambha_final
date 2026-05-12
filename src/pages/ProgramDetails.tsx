@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { CheckCircle2, ArrowLeft, Loader2, X } from "lucide-react";
+import { CheckCircle2, ArrowLeft, Loader2, X, AlertCircle } from "lucide-react";
 import programsHeroImg from "../assets/programs-hero.svg";
 import { useAuth } from "../context/AuthContext";
 import { enrollInCourse, getCourses } from "../services/courseService";
@@ -25,6 +25,28 @@ interface DynamicCourse {
   level?: string;
 }
 
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  whatsapp?: string;
+  address?: string;
+  collegeName?: string;
+  yearOfPassing?: string;
+  highestEducation?: string;
+}
+
+// Validation functions
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePhone = (phone: string): boolean => {
+  const phoneRegex = /^[0-9]{10}$/;
+  return phoneRegex.test(phone.replace(/[^\d]/g, ''));
+};
+
 export default function ProgramDetails() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -42,6 +64,7 @@ export default function ProgramDetails() {
   const [dynamicCourse, setDynamicCourse] = useState<DynamicCourse | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   const [formData, setFormData] = useState({
     name: currentUser?.displayName || "",
@@ -150,6 +173,57 @@ export default function ProgramDetails() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when user starts typing
+    if (formErrors[name as keyof FormErrors]) {
+      setFormErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = "Full name is required";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email address is required";
+    } else if (!validateEmail(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = "Phone number is required";
+    } else if (!validatePhone(formData.phone)) {
+      errors.phone = "Phone number must be 10 digits";
+    }
+
+    if (!formData.whatsapp.trim()) {
+      errors.whatsapp = "WhatsApp number is required";
+    } else if (!validatePhone(formData.whatsapp)) {
+      errors.whatsapp = "WhatsApp number must be 10 digits";
+    }
+
+    if (!formData.address.trim()) {
+      errors.address = "Address is required";
+    }
+
+    if (!formData.collegeName.trim()) {
+      errors.collegeName = "College name is required";
+    }
+
+    if (!formData.yearOfPassing.trim()) {
+      errors.yearOfPassing = "Year of passing is required";
+    } else if (!/^\d{4}$/.test(formData.yearOfPassing)) {
+      errors.yearOfPassing = "Please enter a valid year (e.g., 2024)";
+    }
+
+    if (!formData.highestEducation) {
+      errors.highestEducation = "Please select your education qualification";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleEnrollClick = () => {
@@ -162,19 +236,36 @@ export default function ProgramDetails() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     if (!dynamicCourse || !currentUser) return;
 
     setEnrolling(true);
     try {
-      await enrollInCourse(currentUser.uid, dynamicCourse.id, formData);
+      // Convert camelCase to snake_case for backend
+      const enrollmentData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        whatsapp: formData.whatsapp,
+        address: formData.address,
+        college_name: formData.collegeName,
+        year_of_passing: formData.yearOfPassing,
+        highest_education: formData.highestEducation,
+      };
+
+      await enrollInCourse(currentUser.uid, dynamicCourse.id, enrollmentData);
       setEnrolled(true);
       setIsFormOpen(false);
       alert(
-        `Congratulations! You have successfully enrolled in ${dynamicCourse.title}. Your details have been updated and a notification has been sent to the admin.`
+        `🎉 Congratulations! You have successfully enrolled in ${dynamicCourse.title}. Your details have been saved and the admin has been notified.`
       );
     } catch (error: any) {
       console.error("Enrollment failed:", error);
-      alert("Failed to enroll: " + error.message);
+      alert("❌ Enrollment failed: " + (error.message || "Please try again"));
     } finally {
       setEnrolling(false);
     }
@@ -385,9 +476,10 @@ export default function ProgramDetails() {
 
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Full Name */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Full Name
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -395,12 +487,23 @@ export default function ProgramDetails() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.name ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="John Doe"
                     />
+                    {formErrors.name && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.name}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Email Address */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Email Address
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
@@ -408,12 +511,23 @@ export default function ProgramDetails() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.email ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="you@example.com"
                     />
+                    {formErrors.email && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.email}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Phone Number */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Phone Number
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      Phone Number (10 digits) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -421,12 +535,23 @@ export default function ProgramDetails() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.phone ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="9108032103"
                     />
+                    {formErrors.phone && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.phone}
+                      </div>
+                    )}
                   </div>
+
+                  {/* WhatsApp Number */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      WhatsApp Number
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      WhatsApp Number (10 digits) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -434,14 +559,24 @@ export default function ProgramDetails() {
                       required
                       value={formData.whatsapp}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.whatsapp ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="9108032103"
                     />
+                    {formErrors.whatsapp && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.whatsapp}
+                      </div>
+                    )}
                   </div>
                 </div>
 
+                {/* Address */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                    Permanent Address
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Permanent Address <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     name="address"
@@ -449,14 +584,24 @@ export default function ProgramDetails() {
                     rows={2}
                     value={formData.address}
                     onChange={handleChange}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all resize-none"
+                    className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all resize-none ${
+                      formErrors.address ? "border-red-500 bg-red-50" : "border-slate-200"
+                    }`}
+                    placeholder="Enter your complete address"
                   ></textarea>
+                  {formErrors.address && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                      <AlertCircle size={14} />
+                      {formErrors.address}
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* College Name */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      College Name
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      College Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -464,12 +609,23 @@ export default function ProgramDetails() {
                       required
                       value={formData.collegeName}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.collegeName ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="e.g., VTU"
                     />
+                    {formErrors.collegeName && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.collegeName}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Year of Passing */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Year of Passing
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                      Year of Passing (YYYY) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -477,38 +633,62 @@ export default function ProgramDetails() {
                       required
                       value={formData.yearOfPassing}
                       onChange={handleChange}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                      className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                        formErrors.yearOfPassing ? "border-red-500 bg-red-50" : "border-slate-200"
+                      }`}
+                      placeholder="2024"
+                      maxLength={4}
                     />
+                    {formErrors.yearOfPassing && (
+                      <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                        <AlertCircle size={14} />
+                        {formErrors.yearOfPassing}
+                      </div>
+                    )}
                   </div>
                 </div>
 
+                {/* Education Qualification */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                    Highest Education Qualification
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                    Highest Education Qualification <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="highestEducation"
                     required
                     value={formData.highestEducation}
                     onChange={handleChange}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all"
+                    className={`w-full bg-slate-50 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#1B2B48] outline-none transition-all ${
+                      formErrors.highestEducation ? "border-red-500 bg-red-50" : "border-slate-200"
+                    }`}
                   >
-                    <option value="">Select Qualification</option>
+                    <option value="">-- Select Qualification --</option>
                     <option value="B.Tech">B.Tech</option>
                     <option value="B.Com">B.Com</option>
                     <option value="B.Sc">B.Sc</option>
+                    <option value="BA">BA</option>
                     <option value="BCA">BCA</option>
                     <option value="M.Tech">M.Tech</option>
                     <option value="MBA">MBA</option>
                     <option value="MCA">MCA</option>
                     <option value="Other">Other</option>
                   </select>
+                  {formErrors.highestEducation && (
+                    <div className="flex items-center gap-1 text-red-600 text-xs mt-1">
+                      <AlertCircle size={14} />
+                      {formErrors.highestEducation}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                {/* Action Buttons */}
+                <div className="flex gap-4 pt-6 border-t border-slate-200">
                   <button
                     type="button"
-                    onClick={() => setIsFormOpen(false)}
+                    onClick={() => {
+                      setIsFormOpen(false);
+                      setFormErrors({});
+                    }}
                     className="flex-1 py-4 bg-slate-100 text-[#1B2B48] font-bold rounded-xl hover:bg-slate-200 transition-all"
                   >
                     Cancel
@@ -516,7 +696,7 @@ export default function ProgramDetails() {
                   <button
                     type="submit"
                     disabled={enrolling}
-                    className="flex-1 py-4 bg-[#1B2B48] text-white font-bold rounded-xl hover:bg-[#10192A] shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                    className="flex-1 py-4 bg-[#D4AF37] text-[#1B2B48] font-bold rounded-xl hover:bg-[#c9a430] shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {enrolling ? (
                       <Loader2 size={18} className="animate-spin" />

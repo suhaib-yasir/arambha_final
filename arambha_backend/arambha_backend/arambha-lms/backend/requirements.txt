@@ -9,3 +9,5 @@ fpdf2
 pydantic
 httpx
 python-dotenv
+jinja2
+email-validator

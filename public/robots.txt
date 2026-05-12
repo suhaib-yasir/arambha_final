@@ -1,0 +1,33 @@
+# Arambha Skill Solutions - robots.txt
+# All search engines are allowed
+
+User-agent: *
+Allow: /
+
+# Specific rules for different crawlers
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Disallow admin and private areas (if any)
+Disallow: /admin
+Disallow: /student/dashboard
+Disallow: /*.json$
+
+# Allow crawling of specific static assets
+Allow: *.css$
+Allow: *.js$
+Allow: *.jpg$
+Allow: *.png$
+Allow: *.gif$
+Allow: *.svg$
+
+# Sitemap location
+Sitemap: https://arambhaskills.com/sitemap.xml
