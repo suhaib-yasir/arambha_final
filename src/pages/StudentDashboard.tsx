@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen } from 'lucide-react';
-import { getActiveWebinars, getUpcomingWebinars, Webinar } from '../../services/webinarService';
+import { getActiveWebinars, getUpcomingWebinars, Webinar } from '../services/webinarService';
 
 export default function StudentDashboard() {
   const [activeWebinars, setActiveWebinars] = useState<Webinar[]>([]);
