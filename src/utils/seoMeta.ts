@@ -203,6 +203,6 @@ export default function Home() {
     });
   }, []);
 
-  return <div>{/* Your component */}</div>;
+  return <Home />;
 }
 */
