@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useInView, useAnimation, type Variants } from "motion/react";
+import { setSEOMeta, setOrganizationSchema } from '../utils/seoMeta';
 import {
   ArrowRight,
   MessageCircle,
@@ -77,6 +78,17 @@ function LogoBox({ alt, domain }: { alt: string, domain: string }) {
 
 export default function Home() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSEOMeta({
+      title: "Arambha Skill Solutions - Learn & Earn with Outcome-Driven Programs",
+      description: "Premium skill development platform bridging learning and earning. Explore spoken English, full-stack development, and professional programs. Join 5000+ active students.",
+      keywords: "skill development, online courses, spoken English, full stack development, professional training",
+      url: "https://arambhaskills.com/",
+      imageUrl: "https://arambhaskills.com/favicon.png",
+    });
+    setOrganizationSchema();
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -347,6 +359,7 @@ export default function Home() {
                 <img
                   className="w-full aspect-video object-cover hover:scale-105 transition-transform duration-700"
                   src={engImg}
+                  alt="Spoken English Learning - Arambha Skill Solutions"
                 />
               </div>
             </motion.div>
