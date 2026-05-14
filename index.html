@@ -56,27 +56,41 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Arambha Skill Solutions",
-      "url": "https://arambhaskills.com",
-      "logo": "https://arambhaskills.com/logo.png",
-      "description": "Premium skill development platform bridging the gap between learning and earning with outcome-driven programs.",
-      "sameAs": [
-        "https://www.facebook.com/arambhaskills",
-        "https://www.twitter.com/arambhaskills",
-        "https://www.instagram.com/arambhaskills",
-        "https://www.linkedin.com/company/arambha-skills"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+91-9108032103",
-        "contactType": "Customer Service",
-        "email": "arambhaskilldesignsolutions@gmail.com"
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "IN"
-      }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Arambha Skill Solutions",
+          "url": "https://arambhaskills.com",
+          "logo": "https://arambhaskills.com/favicon.png",
+          "description": "Premium skill development platform bridging the gap between learning and earning with outcome-driven programs.",
+          "sameAs": [
+            "https://www.facebook.com/arambhaskills",
+            "https://www.twitter.com/arambhaskills",
+            "https://www.instagram.com/arambhaskills",
+            "https://www.linkedin.com/company/arambha-skills"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-9108032103",
+            "contactType": "Customer Service",
+            "email": "arambhaskilldesignsolutions@gmail.com"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IN"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "name": "Arambha Skill Solutions",
+          "url": "https://arambhaskills.com/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://arambhaskills.com/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
     }
     </script>
   </head>
