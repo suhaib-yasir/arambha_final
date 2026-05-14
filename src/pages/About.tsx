@@ -34,6 +34,9 @@ import {
 } from 'lucide-react';
 
 import hereBg from "../assets/About page-hero.svg";
+import devarajImg from "../assets/team/devaraj-b.jpg";
+import maheshImg from "../assets/team/mahesh-d.jpg";
+import nirmalaImg from "../assets/team/nirmala-d.jpg";
 
 // --- Helper Components ---
 
@@ -354,6 +357,65 @@ const Differentiation = () => (
             <div className="relative z-10">
               <h4 className="text-xl sm:text-2xl font-bold text-primary mb-3 sm:mb-4 font-serif italic">{item.title}</h4>
               <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed font-sans">{item.desc}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const Team = () => (
+  <section className="pt-16 pb-32 bg-white">
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="text-center mb-12 sm:mb-20">
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold text-primary mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto lora">
+          Our Leadership Team
+        </h2>
+        <div className="h-1 sm:h-1.5 w-16 sm:w-20 bg-accent-gold mx-auto rounded-full"></div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 lg:gap-16">
+        {[
+          {
+            name: "DEVARAJ B",
+            title: "Founder & Chairman",
+            image: devarajImg
+          },
+          {
+            name: "MAHESH D",
+            title: "Chief Business Officer & Director",
+            image: maheshImg
+          },
+          {
+            name: "NIRMALA D",
+            title: "Chief Executive Officer & Director",
+            image: nirmalaImg
+          }
+        ].map((member, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1, duration: 0.6 }}
+            className="group flex flex-col items-center text-center relative"
+          >
+            {/* Circular Image Container with Border */}
+            <div className="relative mb-6 sm:mb-8">
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-500 border-4 sm:border-[6px] border-white">
+                <img 
+                  src={member.image} 
+                  alt={member.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            </div>
+
+            {/* Name and Title */}
+            <div className="relative z-10">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-2 sm:mb-3 font-serif">{member.name}</h3>
+              <p className="text-sm sm:text-base md:text-lg text-accent-gold font-bold tracking-wider uppercase">{member.title}</p>
             </div>
           </motion.div>
         ))}
@@ -800,6 +862,7 @@ export default function App() {
         <Stats />
         <Evolution />
         <Differentiation />
+        <Team />
         <Problem />
         <MissionVision />
         <Values />
