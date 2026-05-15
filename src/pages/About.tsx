@@ -35,8 +35,9 @@ import {
 
 import hereBg from "../assets/About page-hero.svg";
 import devarajImg from "../assets/team/devaraj-b.jpg";
-import maheshImg from "../assets/team/mahesh-d.jpg";
 import nirmalaImg from "../assets/team/nirmala-d.jpg";
+import maheshImg from "../assets/team/mahesh-d.jpg";
+
 
 // --- Helper Components ---
 
@@ -382,16 +383,17 @@ const Team = () => (
             title: "Founder & Chairman",
             image: devarajImg
           },
+           {
+            name: "NIRMALA D",
+            title: "Chief Executive Officer & Director",
+            image: nirmalaImg
+          },
           {
             name: "MAHESH D",
             title: "Chief Business Officer & Director",
             image: maheshImg
           },
-          {
-            name: "NIRMALA D",
-            title: "Chief Executive Officer & Director",
-            image: nirmalaImg
-          }
+         
         ].map((member, idx) => (
           <motion.div
             key={idx}
