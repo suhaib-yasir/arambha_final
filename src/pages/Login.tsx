@@ -24,7 +24,7 @@ export default function Login() {
       if (adminStatus) {
         navigate("/admin/portal");
       } else {
-        navigate("/");
+        navigate("/student/dashboard");
       }
     } catch (err: any) {
       setError(err.message || "Failed to sign in. Please check your credentials.");
@@ -43,7 +43,7 @@ export default function Login() {
       if (adminStatus) {
         navigate("/admin/portal");
       } else {
-        navigate("/");
+        navigate("/student/dashboard");
       }
     } catch (err: any) {
       setError(err.message || "Failed to sign in with Google.");

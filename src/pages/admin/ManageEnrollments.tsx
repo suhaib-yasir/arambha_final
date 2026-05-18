@@ -24,17 +24,37 @@ export default function ManageEnrollments() {
 
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(db, "enrollments"), orderBy("enrolled_at", "desc"));
+    // Removed orderBy to prevent missing index errors on fresh Firebase projects
+    const q = query(collection(db, "enrollments"));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setEnrollments(data);
-      setLoading(false);
+      try {
+        const firestoreData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Get mock enrollments
+        const mockEnrollments = JSON.parse(sessionStorage.getItem('mockEnrollments') || '[]');
+        
+        // Sort in memory to avoid Firestore index requirements
+        const allData = [...mockEnrollments, ...firestoreData].sort((a, b) => {
+          const dateA = a.enrolled_at?.toDate ? a.enrolled_at.toDate().getTime() : new Date(a.enrolled_at || 0).getTime();
+          const dateB = b.enrolled_at?.toDate ? b.enrolled_at.toDate().getTime() : new Date(b.enrolled_at || 0).getTime();
+          return dateB - dateA;
+        });
+
+        setEnrollments(allData);
+      } catch (err) {
+        console.error("Error processing enrollments:", err);
+      } finally {
+        setLoading(false);
+      }
     }, (err) => {
       console.error("Enrollments listener error:", err);
+      // Even if firestore fails, show mock data
+      const mockEnrollments = JSON.parse(sessionStorage.getItem('mockEnrollments') || '[]');
+      setEnrollments(mockEnrollments);
       setLoading(false);
     });
 
@@ -119,7 +139,11 @@ export default function ManageEnrollments() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-xs text-slate-600">
                         <Calendar size={12} />
-                        {enrollment.enrolled_at?.toDate ? enrollment.enrolled_at.toDate().toLocaleDateString() : 'Recent'}
+                        {enrollment.enrolled_at?.toDate 
+                          ? enrollment.enrolled_at.toDate().toLocaleDateString() 
+                          : enrollment.enrolled_at 
+                            ? new Date(enrollment.enrolled_at).toLocaleDateString() 
+                            : 'Recent'}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">

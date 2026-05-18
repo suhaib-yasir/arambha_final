@@ -2,21 +2,26 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen } from 'lucide-react';
 import { getActiveWebinars, getUpcomingWebinars, Webinar } from '../services/webinarService';
+import { useAuth } from '../context/AuthContext';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 export default function StudentDashboard() {
+  const { currentUser } = useAuth();
   const [activeWebinars, setActiveWebinars] = useState<Webinar[]>([]);
   const [upcomingWebinars, setUpcomingWebinars] = useState<Webinar[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWebinars();
+    fetchDashboardData();
     
     // Refresh webinars every minute to update active status
-    const interval = setInterval(fetchWebinars, 60000);
+    const interval = setInterval(fetchDashboardData, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [currentUser]);
 
-  const fetchWebinars = async () => {
+  const fetchDashboardData = async () => {
     try {
       setLoading(true);
       const [active, upcoming] = await Promise.all([
@@ -29,12 +34,34 @@ export default function StudentDashboard() {
       
       setActiveWebinars(active);
       setUpcomingWebinars(filteredUpcoming);
+
+      // Fetch enrollments from Firebase
+      let firebaseEnrollments: any[] = [];
+      if (currentUser) {
+        try {
+          const enrollmentsRef = collection(db, 'enrollments');
+          const q = query(enrollmentsRef, where('user_id', '==', currentUser.uid));
+          const snapshot = await getDocs(q);
+          firebaseEnrollments = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            enrolled_at: doc.data().enrolled_at?.toDate?.()
+              ? doc.data().enrolled_at.toDate().toISOString()
+              : doc.data().enrolled_at || new Date().toISOString()
+          }));
+        } catch (err) {
+          console.warn('Firebase enrollment fetch failed:', err);
+        }
+      }
+
+      setEnrolledCourses(firebaseEnrollments);
     } catch (err) {
-      console.error('Failed to fetch webinars:', err);
+      console.error('Failed to fetch dashboard data:', err);
     } finally {
       setLoading(false);
     }
   };
+
 
   const formatDateTime = (date: any) => {
     if (!date) return '';
@@ -81,8 +108,43 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">My Webinars</h1>
-          <p className="text-slate-600">Join live sessions and learn from experts</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Student Dashboard</h1>
+          <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
+        </motion.div>
+
+        {/* My Courses Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="mb-12"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
+              <BookOpen size={18} className="text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-primary">My Courses</h2>
+          </div>
+
+          {enrolledCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {enrolledCourses.map((course, index) => (
+                <div key={index} className="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="font-bold text-lg text-primary">{course.course_title}</h3>
+                    <span className="bg-green-100 text-green-700 text-[10px] uppercase font-bold px-2 py-1 rounded">Paid</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-4">Enrolled on: {new Date(course.enrolled_at).toLocaleDateString()}</p>
+                  <button className="w-full py-2 bg-primary/5 text-primary font-bold rounded-lg hover:bg-primary/10 transition-all text-sm">Continue Learning</button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+              <BookOpen size={48} className="mx-auto text-slate-300 mb-4" />
+              <p className="text-slate-500">You haven't enrolled in any courses yet.</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Active Webinars Section */}

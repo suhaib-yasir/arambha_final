@@ -8,3 +8,5 @@ coverage/
 !.env.example
 **/credentials.json
 credentials.json
+__pycache__/
+*.pyc

@@ -5,6 +5,7 @@ import { getCourses, Course } from "../services/courseService";
 import { useAuth } from "../context/AuthContext";
 import { isUserAdmin } from "../services/adminService";
 import { Link } from "react-router-dom";
+import EnrollmentForm from "../components/EnrollmentForm";
 
 // Import program images
 import spokenEnglishImg from "../assets/programs/spoken-english-mastery.png";
@@ -51,6 +52,8 @@ export default function ProgramsScreen() {
   const [dynamicPrograms, setDynamicPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewVideo, setPreviewVideo] = useState<string | null>(null);
+  const [isEnrollFormOpen, setIsEnrollFormOpen] = useState(false);
+  const [activeEnrollProgram, setActiveEnrollProgram] = useState<{id: string, title: string} | null>(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -60,14 +63,13 @@ export default function ProgramsScreen() {
     }
   }, [currentUser]);
 
-  const handleEnroll = (programId: string) => {
+  const handleEnroll = (program: any) => {
     if (!currentUser) {
       alert("Please log in to enroll in programs.");
       return;
     }
-    if (!enrolledProgramIds.includes(programId)) {
-      setEnrolledProgramIds([...enrolledProgramIds, programId]);
-    }
+    setActiveEnrollProgram({ id: program.id, title: program.title });
+    setIsEnrollFormOpen(true);
   };
 
   useEffect(() => {
@@ -272,7 +274,7 @@ export default function ProgramsScreen() {
               onPreview={setPreviewVideo}
               isAdmin={isAdmin}
               enrolledProgramIds={enrolledProgramIds}
-              onEnroll={handleEnroll}
+              onEnroll={(program) => handleEnroll(program)}
             />
           )
         ) : (
@@ -368,6 +370,20 @@ export default function ProgramsScreen() {
           </div>
         </div>
       )}
+
+      {/* Enrollment Form & Payment */}
+      {activeEnrollProgram && (
+        <EnrollmentForm
+          isOpen={isEnrollFormOpen}
+          onClose={() => setIsEnrollFormOpen(false)}
+          program={activeEnrollProgram}
+          onSuccess={() => {
+            if (activeEnrollProgram) {
+              setEnrolledProgramIds([...enrolledProgramIds, activeEnrollProgram.id]);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -388,7 +404,7 @@ function ProgramSection({
   onPreview: (url: string) => void;
   isAdmin: boolean;
   enrolledProgramIds: string[];
-  onEnroll: (id: string) => void;
+  onEnroll: (program: any) => void;
 }) {
   return (
     <section className="mb-20">
@@ -452,7 +468,7 @@ function ProgramSection({
                     </button>
                   ) : (
                     <button
-                      onClick={() => onEnroll(program?.id)}
+                      onClick={() => onEnroll(program)}
                       className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 brand-gradient-navy text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-md text-sm"
                     >
                       Enroll

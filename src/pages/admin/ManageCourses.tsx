@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import { deleteCourse, updateCourse, Course } from '../../services/courseService';
+import { deleteCourse, updateCourse, getCourses, Course } from '../../services/courseService';
 import { useNavigate } from 'react-router-dom';
 import { 
   Trash2, 
@@ -57,21 +57,51 @@ export default function ManageCourses() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const allCourses = await getCourses();
+      setCourses(allCourses);
+    } catch (err) {
+      console.error("Failed to fetch courses manually:", err);
+      setMessage({ type: 'error', text: 'Critical failure syncing local database.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     const q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
+      const firestoreData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Course[];
-      setCourses(data);
-      setLoading(false);
+
+      if (firestoreData.length === 0) {
+        console.log("No courses in Firestore, trying local fallback...");
+        getCourses().then(localData => {
+          setCourses(localData);
+          setLoading(false);
+        }).catch(() => {
+          setCourses([]);
+          setLoading(false);
+        });
+      } else {
+        setCourses(firestoreData);
+        setLoading(false);
+      }
     }, (err) => {
-      console.error("Courses listener error:", err);
-      setLoading(false);
-      setMessage({ type: 'error', text: 'Failed to load courses from live stream.' });
+      console.error("Courses listener error, falling back to scanner:", err);
+      getCourses().then(localData => {
+        setCourses(localData);
+      }).catch(() => {
+        setCourses([]);
+      }).finally(() => {
+        setLoading(false);
+      });
     });
 
     return () => unsubscribe();
