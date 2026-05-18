@@ -74,9 +74,9 @@ export default function AdminPortal() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#F8FAFC] pt-24">
       {/* Portal Header */}
-      <div className="bg-white border-b border-slate-200 pt-8 pb-4">
+      <div className="bg-white border-b border-slate-200 pt-4 pb-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
