@@ -2,12 +2,20 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Gift } from "lucide-react";
 import referralImg from "../assets/refferals/offer_code.png";
+import { useAuth } from "../context/AuthContext";
 
 export default function ReferralPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [closeCount, setCloseCount] = useState(0);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
+    // Don't show popup if user is logged in
+    if (currentUser) {
+      setIsVisible(false);
+      return;
+    }
+
     // If the user has closed the popup 2 times, don't start any timers
     if (closeCount >= 2) return;
 
@@ -27,7 +35,7 @@ export default function ReferralPopup() {
       clearTimeout(initialDelay);
       clearInterval(interval);
     };
-  }, [closeCount]);
+  }, [closeCount, currentUser]);
 
   const closePopup = () => {
     setIsVisible(false);
