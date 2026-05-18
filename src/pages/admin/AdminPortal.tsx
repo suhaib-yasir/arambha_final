@@ -36,17 +36,28 @@ export default function AdminPortal() {
   // Real-time stats listener
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "stats", "global"), (docSnap) => {
+      const mockEnrollments = JSON.parse(sessionStorage.getItem('mockEnrollments') || '[]');
+      const mockCount = mockEnrollments.length;
+
       if (docSnap.exists()) {
         const data = docSnap.data();
         console.log("Real-time Stats Update:", data);
         setStats({
-          total_enrollments: data.total_enrollments || 0,
+          total_enrollments: (data.total_enrollments || 0) + mockCount,
           total_applications: data.total_applications || 0,
           total_contacts: data.total_contacts || 0
+        });
+      } else {
+        setStats({
+          total_enrollments: mockCount,
+          total_applications: 0,
+          total_contacts: 0
         });
       }
     }, (err) => {
       console.error("Stats listener error:", err);
+      const mockEnrollments = JSON.parse(sessionStorage.getItem('mockEnrollments') || '[]');
+      setStats(prev => ({ ...prev, total_enrollments: mockEnrollments.length }));
     });
 
     return () => unsubscribe();

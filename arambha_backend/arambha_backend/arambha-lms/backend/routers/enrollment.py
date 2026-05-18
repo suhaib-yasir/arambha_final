@@ -79,4 +79,17 @@ async def enroll_course(req: EnrollRequest):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
     
-    return {"success": True, "message": "Already enrolled", "is_new": False}
+    # Even if already enrolled, we trigger the email for testing/confirmation if requested
+    course_snap = db.collection('courses').document(req.course_id).get()
+    course_data = course_snap.to_dict() if course_snap.exists else {"title": "Unknown Course"}
+    
+    details = f"Phone: {req.phone}\nWhatsApp: {req.whatsapp}\nAddress: {req.address}\nCollege: {req.college_name}\nEducation: {req.highest_education}"
+    send_enrollment_email(
+        student_name=req.name or "Unknown Student",
+        student_email=req.email or "Unknown Email",
+        program_name=course_data.get('title'),
+        program_type="Course Enrollment",
+        other_details=details
+    )
+    
+    return {"success": True, "message": "Already enrolled (Confirmation email re-sent)", "is_new": False}

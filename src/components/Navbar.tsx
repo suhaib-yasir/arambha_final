@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, LogOut, ShieldCheck, Filter } from "lucide-react";
+import { Menu, X, LogOut, ShieldCheck, Filter, LayoutDashboard } from "lucide-react";
 import logo from "../assets/ARAMBHA.svg";
 import arambhaText from "../assets/arambha-text.svg";
 import { useAuth } from "../context/AuthContext";
@@ -101,6 +101,18 @@ export default function Navbar() {
               Portal
             </Link>
           )}
+          {currentUser && !isAdmin && (
+            <Link
+              to="/student/dashboard"
+              className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${location.pathname.startsWith('/student/dashboard')
+                  ? 'text-accent-gold border-b-2 border-accent-gold'
+                  : 'text-accent-gold/80 hover:text-accent-gold'
+                }`}
+            >
+              <LayoutDashboard size={16} />
+              Dashboard
+            </Link>
+          )}
         </div>
 
         {/* Desktop CTA Buttons */}
@@ -109,7 +121,11 @@ export default function Navbar() {
             <Link to="/login" className="hidden lg:block text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</Link>
           ) : (
             <button
-              onClick={() => signOut(auth).then(() => navigate('/'))}
+              onClick={() => {
+                sessionStorage.removeItem('mockUser');
+                window.dispatchEvent(new CustomEvent('mock-login', { detail: null }));
+                signOut(auth).then(() => navigate('/'));
+              }}
               className="hidden lg:flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all cursor-pointer"
             >
               <LogOut size={16} />
@@ -163,6 +179,21 @@ export default function Navbar() {
                 </Link>
               </div>
             )}
+            {currentUser && !isAdmin && (
+              <div className="space-y-3">
+                <Link
+                  to="/student/dashboard"
+                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/student/dashboard')
+                      ? 'bg-accent-gold text-white'
+                      : 'text-accent-gold hover:bg-accent-gold/5'
+                    }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <LayoutDashboard size={20} />
+                  Student Dashboard
+                </Link>
+              </div>
+            )}
             {!currentUser ? (
               <Link
                 to="/login"
@@ -174,6 +205,8 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => {
+                  sessionStorage.removeItem('mockUser');
+                  window.dispatchEvent(new CustomEvent('mock-login', { detail: null }));
                   signOut(auth).then(() => {
                     navigate('/');
                     setIsMenuOpen(false);
