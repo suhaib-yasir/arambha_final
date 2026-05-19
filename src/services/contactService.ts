@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+import { addDoc, collection, getDocs, serverTimestamp, orderBy, query } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 export interface ContactMessage {
   name: string;
@@ -9,25 +10,29 @@ export interface ContactMessage {
 }
 
 export const sendContactMessage = async (messageData: ContactMessage) => {
-  const response = await fetch(`${API_URL}/api/contact`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(messageData),
-  });
-
-  if (!response.ok) {
+  try {
+    const docRef = await addDoc(collection(db, 'contacts'), {
+      ...messageData,
+      createdAt: serverTimestamp(),
+      status: 'new'
+    });
+    return { id: docRef.id, ...messageData };
+  } catch (error) {
+    console.error('Failed to send contact message to Firestore:', error);
     throw new Error('Failed to send message');
   }
-
-  return response.json();
 };
 
 export const getContacts = async () => {
-  const response = await fetch(`${API_URL}/api/contacts`);
-  if (!response.ok) {
+  try {
+    const q = query(collection(db, 'contacts'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Failed to fetch contacts from Firestore:', error);
     throw new Error('Failed to fetch contact messages');
   }
-  return response.json();
 };

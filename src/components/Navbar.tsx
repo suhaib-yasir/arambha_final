@@ -64,7 +64,7 @@ export default function Navbar() {
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-4 w-full">
         <Link to="/" className="flex items-center relative w-[280px] sm:w-[350px] lg:w-[450px] xl:w-[500px] h-10 sm:h-12 lg:h-14 z-10 shrink-0">
           <img
-            alt="Arambha Logo"
+            alt="Arambha Skill Solutions"
             className="absolute left-0 h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.3] lg:scale-[1.6] origin-left transition-transform"
             src={logo}
           />
@@ -81,8 +81,8 @@ export default function Navbar() {
             <Link
               key={link.path}
               className={`text-sm font-semibold tracking-tight transition-colors pb-1 ${isActive(link.path)
-                  ? 'text-primary border-b-2 border-accent-gold'
-                  : 'text-on-surface-variant hover:text-primary'
+                ? 'text-primary border-b-2 border-accent-gold'
+                : 'text-on-surface-variant hover:text-primary'
                 }`}
               to={link.path}
             >
@@ -93,8 +93,8 @@ export default function Navbar() {
             <Link
               to="/admin/portal"
               className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${location.pathname.startsWith('/admin')
-                  ? 'text-accent-gold border-b-2 border-accent-gold'
-                  : 'text-accent-gold/80 hover:text-accent-gold'
+                ? 'text-accent-gold border-b-2 border-accent-gold'
+                : 'text-accent-gold/80 hover:text-accent-gold'
                 }`}
             >
               <ShieldCheck size={16} />
@@ -105,8 +105,8 @@ export default function Navbar() {
             <Link
               to="/student/dashboard"
               className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${location.pathname.startsWith('/student/dashboard')
-                  ? 'text-accent-gold border-b-2 border-accent-gold'
-                  : 'text-accent-gold/80 hover:text-accent-gold'
+                ? 'text-accent-gold border-b-2 border-accent-gold'
+                : 'text-accent-gold/80 hover:text-accent-gold'
                 }`}
             >
               <LayoutDashboard size={16} />
@@ -155,8 +155,8 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
-                    ? 'bg-accent-gold text-white'
-                    : 'text-on-surface-variant hover:bg-slate-50'
+                  ? 'bg-accent-gold text-white'
+                  : 'text-on-surface-variant hover:bg-slate-50'
                   }`}
                 to={link.path}
                 onClick={() => setIsMenuOpen(false)}
@@ -169,8 +169,8 @@ export default function Navbar() {
                 <Link
                   to="/admin/portal"
                   className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/admin')
-                      ? 'bg-accent-gold text-white'
-                      : 'text-accent-gold hover:bg-accent-gold/5'
+                    ? 'bg-accent-gold text-white'
+                    : 'text-accent-gold hover:bg-accent-gold/5'
                     }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -184,8 +184,8 @@ export default function Navbar() {
                 <Link
                   to="/student/dashboard"
                   className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/student/dashboard')
-                      ? 'bg-accent-gold text-white'
-                      : 'text-accent-gold hover:bg-accent-gold/5'
+                    ? 'bg-accent-gold text-white'
+                    : 'text-accent-gold hover:bg-accent-gold/5'
                     }`}
                   onClick={() => setIsMenuOpen(false)}
                 >

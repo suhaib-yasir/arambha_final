@@ -96,6 +96,13 @@ export default function Login() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10 lg:space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-center gap-2 text-sm font-sans mb-4">
+                  <AlertCircle size={18} className="shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+              
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-primary mb-2 font-sans">
                   Email Address
@@ -193,6 +200,13 @@ export default function Login() {
                 </svg>
                 Sign in with Google
               </button>
+
+              <div className="mt-8 text-center text-sm font-sans">
+                <span className="text-on-surface-variant">Don't have an account? </span>
+                <Link to="/signup" className="text-accent-gold font-bold hover:underline transition-all">
+                  Sign up
+                </Link>
+              </div>
             </form>
           </motion.div>
         </div>

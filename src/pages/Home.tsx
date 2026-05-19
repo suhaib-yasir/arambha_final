@@ -81,7 +81,7 @@ export default function Home() {
 
   useEffect(() => {
     setSEOMeta({
-      title: "Arambha Skill Solutions - Learn & Earn with Outcome-Driven Programs",
+      title: "Arambha Skill Solutions",
       description: "Premium skill development platform bridging learning and earning. Explore spoken English, full-stack development, and professional programs. Join 5000+ active students.",
       keywords: "skill development, online courses, spoken English, full stack development, professional training",
       url: "https://arambhaskills.com/",
